@@ -1,5 +1,6 @@
 {
   "name": "cubechrono",
+  "description": "Speedcubing timer with WCA puzzle support, session tracking and statistics",
   "private": true,
   "version": "0.0.0",
   "type": "module",
