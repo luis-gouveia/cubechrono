@@ -1,8 +1,14 @@
 @import "tailwindcss";
+@config "../tailwind.config.ts";
 
 :root {
   font-family: Inter, system-ui, sans-serif;
-  background-color: #242424;
+
+  --background: 36, 36, 36;
+  --primary: 255, 255, 255;
+  --secondary: 115, 115, 115;
+  --button-full: 46, 50, 54, 50;
+  --button-empty: 0, 0, 0, 0;
 }
 
 * {

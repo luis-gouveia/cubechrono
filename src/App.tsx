@@ -25,7 +25,7 @@ function App() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center px-6 text-white">
+    <main className="flex min-h-screen items-center justify-center px-6 text-white bg-background">
       <div className="w-full max-w-2xl text-center">
         <p className="mb-6 text-sm font-bold tracking-[0.3em] text-zinc-500">CubeChrono</p>
 
