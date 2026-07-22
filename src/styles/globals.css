@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@config "../tailwind.config.ts";
+@config "../../tailwind.config.ts";
 
 :root {
   font-family: Inter, system-ui, sans-serif;
@@ -8,15 +8,9 @@
   --primary: 255, 255, 255;
   --secondary: 115, 115, 115;
   --button-full: 46, 50, 54, 50;
+  --button-full-hover: 58, 63, 68, 0.65;
   --button-empty: 0, 0, 0, 0;
-}
-
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  min-width: 320px;
-  min-height: 100vh;
+  --button-empty-hover: 39, 39, 42;
+  --divider: 82 , 82, 92, 0.4;
+  --accent: 43, 157, 161;
 }
