@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { puzzleSchema } from './puzzle'
 
 const SOLVE_PENALTY = ['none', '+2', 'DNF'] as const
 
@@ -7,7 +8,7 @@ export const solveSchema = z.object({
   time: z.number().positive(),
   penalty: z.enum(SOLVE_PENALTY),
   scramble: z.string().min(1).max(500),
-  puzzle: z.string().min(1),
+  puzzle: puzzleSchema,
   comment: z.string().max(255).optional(),
   createdAt: z.date(),
 })

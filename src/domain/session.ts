@@ -1,10 +1,11 @@
 import { z } from 'zod'
+import { puzzleSchema } from './puzzle'
 
 export const sessionSchema = z.object({
   id: z.uuid(),
   name: z.string().min(1).max(100),
   description: z.string().max(255).optional(),
-  puzzle: z.string().min(1),
+  puzzle: puzzleSchema,
   createdAt: z.date(),
 })
 export type SessionProps = z.infer<typeof sessionSchema>
