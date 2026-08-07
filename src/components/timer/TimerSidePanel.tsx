@@ -1,4 +1,4 @@
-import { SessionStats } from '../../types/sessionStats'
+import { SessionStats } from '../../types/session'
 import { SolveItem } from '../../types/solve'
 import SessionSummary from './SessionSummary'
 import SolveTable from './SolveTable'
