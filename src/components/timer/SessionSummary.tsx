@@ -1,5 +1,5 @@
 import { Circle } from 'lucide-react'
-import { SessionStats } from '../../types/sessionStats'
+import { SessionStats } from '../../types/session'
 import { formatTime } from '../../utils/time'
 
 interface SessionSummaryProps {
@@ -50,9 +50,9 @@ function SessionSummary({ stats }: SessionSummaryProps) {
           <p className="text-sm text-secondary">ao12</p>
         </div>
         <div className="grid grid-cols-3 gap-4 text-center">
-          <p className="text-lg">{formatTime(stats.best.single)}</p>
-          <p className="text-lg">{formatTime(stats.best.ao5)}</p>
-          <p className="text-lg">{formatTime(stats.best.ao12)}</p>
+          <p className="text-lg">{formatTime(stats.best.single.value)}</p>
+          <p className="text-lg">{formatTime(stats.best.ao5.value)}</p>
+          <p className="text-lg">{formatTime(stats.best.ao12.value)}</p>
         </div>
       </div>
     </>
