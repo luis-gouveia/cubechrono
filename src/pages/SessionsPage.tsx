@@ -1,13 +1,16 @@
 import { useState } from 'react'
 import { Plus } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 import SessionList from '../components/sessions/SessionList'
+import SessionModal from '../components/sessions/SessionModal'
+import DeleteSessionModal, { type DeleteSessionAction } from '../components/sessions/DeleteSessionModal'
 import type { SessionListItem } from '../types/session'
 import { PUZZLE } from '../domain/puzzle'
-import { useNavigate } from 'react-router-dom'
+import { Session } from '../domain/session'
 
 const initialSessions: SessionListItem[] = [
   {
-    id: '1',
+    id: crypto.randomUUID(),
     name: 'My Session 4',
     description: 'This is the description for the session',
     puzzle: PUZZLE.THREE_BY_THREE,
@@ -19,7 +22,7 @@ const initialSessions: SessionListItem[] = [
     createdAt: new Date('2025-10-15'),
   },
   {
-    id: '2',
+    id: crypto.randomUUID(),
     name: 'My Session 5',
     puzzle: PUZZLE.THREE_BY_THREE,
     solves: {
@@ -30,7 +33,7 @@ const initialSessions: SessionListItem[] = [
     createdAt: new Date('2025-10-15'),
   },
   {
-    id: '3',
+    id: crypto.randomUUID(),
     name: 'My Session 6',
     puzzle: PUZZLE.SKEWB,
     solves: {
@@ -40,7 +43,7 @@ const initialSessions: SessionListItem[] = [
     createdAt: new Date('2025-10-15'),
   },
   {
-    id: '4',
+    id: crypto.randomUUID(),
     name: 'My Session 7',
     puzzle: PUZZLE.PYRAMINX,
     solves: {
@@ -50,7 +53,7 @@ const initialSessions: SessionListItem[] = [
     createdAt: new Date('2025-10-15'),
   },
   {
-    id: '5',
+    id: crypto.randomUUID(),
     name: 'My Session 8',
     puzzle: PUZZLE.THREE_BY_THREE,
     solves: {
@@ -60,7 +63,7 @@ const initialSessions: SessionListItem[] = [
     createdAt: new Date('2025-10-15'),
   },
   {
-    id: '6',
+    id: crypto.randomUUID(),
     name: 'My Session 8',
     puzzle: PUZZLE.FOUR_BY_FOUR,
     solves: {
@@ -70,7 +73,7 @@ const initialSessions: SessionListItem[] = [
     createdAt: new Date('2025-10-15'),
   },
   {
-    id: '7',
+    id: crypto.randomUUID(),
     name: 'My Session 9 With drag icon',
     puzzle: PUZZLE.FOUR_BY_FOUR,
     solves: {
@@ -82,21 +85,81 @@ const initialSessions: SessionListItem[] = [
 ]
 
 function SessionsPage() {
-  const [sessions, setSessions] = useState<SessionListItem[]>(initialSessions)
   const navigate = useNavigate()
 
+  const [sessions, setSessions] = useState<SessionListItem[]>(initialSessions)
+
+  const [showCreateModal, setShowCreateModal] = useState(false)
+  const [editingSession, setEditingSession] = useState<SessionListItem | null>(null)
+  const [deletingSession, setDeletingSession] = useState<SessionListItem | null>(null)
+
+  const handleOpen = (session: SessionListItem) => {
+    navigate(`/sessions/${session.id}`)
+  }
+
   const handleEdit = (session: SessionListItem) => {
-    console.log('edit', session)
+    setEditingSession(session)
   }
-
   const handleDelete = (session: SessionListItem) => {
-    console.log('delete', session)
+    setDeletingSession(session)
+  }
+  const handleCreate = () => {
+    setShowCreateModal(true)
   }
 
-  const handleOpen = (session: SessionListItem) => navigate(`/sessions/${session.id}`)
+  const handleCreateSubmit = (session: Session) => {
+    const newSession: SessionListItem = {
+      id: session.id,
+      name: session.name,
+      description: session.description,
+      puzzle: session.puzzle,
+      createdAt: session.createdAt,
+      solves: { total: 0, completed: 0 },
+    }
 
-  const handleCreate = () => {
-    console.log('create session')
+    setSessions((previous) => [...previous, newSession])
+    setShowCreateModal(false)
+  }
+
+  const handleEditSubmit = (updatedSession: Session) => {
+    setSessions((previous) =>
+      previous.map((session) =>
+        session.id === updatedSession.id
+          ? {
+              ...session,
+              name: updatedSession.name,
+              description: updatedSession.description,
+              puzzle: updatedSession.puzzle,
+            }
+          : session,
+      ),
+    )
+
+    setEditingSession(null)
+  }
+
+  const handleDeleteAction = (action: DeleteSessionAction) => {
+    if (!deletingSession) return
+    switch (action) {
+      case 'clear':
+        setSessions((previous) =>
+          previous.map((session) =>
+            session.id === deletingSession.id
+              ? {
+                  ...session,
+                  solves: { total: 0, completed: 0 },
+                  mean: undefined,
+                }
+              : session,
+          ),
+        )
+        break
+      case 'delete':
+        setSessions((previous) => previous.filter((session) => session.id !== deletingSession.id))
+        break
+    }
+
+    setDeletingSession(null)
   }
 
   return (
@@ -135,6 +198,31 @@ function SessionsPage() {
           onOpen={handleOpen}
         />
       </div>
+
+      <SessionModal
+        open={showCreateModal}
+        mode="create"
+        onClose={() => setShowCreateModal(false)}
+        onSubmit={handleCreateSubmit}
+      />
+      {editingSession && (
+        <SessionModal
+          open
+          mode="edit"
+          session={Session.from({
+            id: editingSession.id,
+            name: editingSession.name,
+            description: editingSession.description,
+            puzzle: editingSession.puzzle,
+            createdAt: editingSession.createdAt,
+          })}
+          onClose={() => setEditingSession(null)}
+          onSubmit={handleEditSubmit}
+        />
+      )}
+      {deletingSession && (
+        <DeleteSessionModal open onClose={() => setDeletingSession(null)} onConfirm={handleDeleteAction} />
+      )}
     </main>
   )
 }
