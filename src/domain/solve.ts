@@ -2,7 +2,7 @@ import { z } from 'zod'
 import { Entity, EntityProps } from './common/entity'
 import { puzzleSchema } from './puzzle'
 
-const SOLVE_PENALTY = ['none', '+2', 'DNF'] as const
+export const SOLVE_PENALTY = ['none', '+2', 'DNF'] as const
 
 export const createSolveSchema = z.object({
   time: z.number().positive(),
