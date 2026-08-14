@@ -1,21 +1,26 @@
 import { z } from 'zod'
 import { puzzleSchema } from './puzzle'
+import { Entity, EntityProps } from './common/entity'
 
 export const sessionSchema = z.object({
-  id: z.uuid(),
   name: z.string().min(1).max(100),
   description: z.string().max(255).optional(),
   puzzle: puzzleSchema,
-  createdAt: z.date(),
 })
-export type SessionProps = z.infer<typeof sessionSchema>
+export type CreateSessionProps = z.infer<typeof sessionSchema>
+export type SessionProps = EntityProps & CreateSessionProps
 
-export class Session {
-  private readonly props: SessionProps
+export class Session extends Entity<SessionProps, typeof sessionSchema.shape> {
+  private constructor(props: SessionProps | CreateSessionProps) {
+    super(props, sessionSchema)
+  }
 
-  constructor(input: SessionProps) {
-    const validated = sessionSchema.parse(input)
-    this.props = validated
+  static create(input: CreateSessionProps) {
+    return new Session(input)
+  }
+
+  static from(input: SessionProps) {
+    return new Session(input)
   }
 
   get id() {
