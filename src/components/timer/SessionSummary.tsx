@@ -1,16 +1,24 @@
-import { Circle } from 'lucide-react'
 import { SessionStats } from '../../types/session'
 import { formatTime } from '../../utils/time'
+import { Puzzle, PUZZLES } from '../../domain/puzzle'
 
 interface SessionSummaryProps {
+  puzzle: Puzzle
   stats: SessionStats
 }
 
-function SessionSummary({ stats }: SessionSummaryProps) {
+function SessionSummary({ puzzle, stats }: SessionSummaryProps) {
   return (
     <>
       <div className="flex items-center gap-4 border-b border-divider p-4">
-        <Circle size={40} className="text-accent shrink-0 ml-2" />
+        <div className="ml-5">
+          <div
+            className="flex h-10 w-10 items-center justify-center rounded"
+            style={{ backgroundColor: `${PUZZLES[puzzle].color}` }}
+          >
+            <img src={PUZZLES[puzzle].logo} alt={PUZZLES[puzzle].label} className="h-7 w-7" />
+          </div>
+        </div>
         <div className="flex-1">
           <div className="flex justify-around text-center">
             <div>

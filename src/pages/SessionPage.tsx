@@ -2,7 +2,7 @@ import { ArrowLeft, Pencil, Trash2, Trophy, Hash, TriangleAlert } from 'lucide-r
 import { useNavigate, useParams } from 'react-router-dom'
 import type { SessionListItem, SessionStats } from '../types/session'
 import { formatTime } from '../utils/time'
-import { PUZZLE } from '../domain/puzzle'
+import { PUZZLE, PUZZLES } from '../domain/puzzle'
 import { formatDate, formatDateTime } from '../utils/date'
 import { useState } from 'react'
 import DeleteSessionModal, { DeleteSessionAction } from '../components/sessions/DeleteSessionModal'
@@ -116,7 +116,14 @@ function SessionPage() {
             <div className="min-w-0">
               <div className="flex items-center gap-3">
                 <h1 className="truncate text-2xl font-medium">{session.name}</h1>
-                <div className=" flex h-6 w-6 shrink-0 items-center justify-center rounded bg-accent text-[10px]" />
+                <div>
+                  <div
+                    className="flex h-6 w-6 items-center justify-center rounded"
+                    style={{ backgroundColor: `${PUZZLES[session.puzzle].color}` }}
+                  >
+                    <img src={PUZZLES[session.puzzle].logo} alt={PUZZLES[session.puzzle].label} className="h-4 w-4" />
+                  </div>
+                </div>
               </div>
               {session.description && <p className="mt-1 text-sm text-secondary">{session.description}</p>}
             </div>

@@ -55,6 +55,7 @@ function TimerPage() {
     <div className="relative h-full w-full overflow-hidden">
       <div className="fixed left-16 top-0 h-screen">
         <TimerSidePanel
+          puzzle={puzzle}
           stats={{
             solves: {
               completed: 49,

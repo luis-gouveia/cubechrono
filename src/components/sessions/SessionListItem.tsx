@@ -4,6 +4,7 @@ import { Pencil, Trash2, GripVertical } from 'lucide-react'
 import type { SessionListItem as Session } from '../../types/session'
 import { formatDate } from '../../utils/date'
 import { formatTime } from '../../utils/time'
+import { PUZZLES } from '../../domain/puzzle'
 
 interface SessionListItemProps {
   session: Session
@@ -25,19 +26,7 @@ function SessionListItem({ session, onEdit, onDelete, onOpen }: SessionListItemP
         transition: isDragging ? undefined : 'transform 120ms cubic-bezier(0.2, 0, 0, 1)',
       }}
       className={`
-        grid
-        grid-cols-[32px_minmax(0,1fr)_64px_64px_96px_56px]
-        items-center
-        gap-2
-        rounded-md
-        border
-        border-divider
-        bg-background
-        px-2
-        py-2
-        text-sm
-        transition-all
-        hover:bg-button-full-hover
+        grid grid-cols-[32px_minmax(0,1fr)_64px_64px_96px_56px] items-center gap-2 rounded-md border border-divider bg-background px-2 py-2 text-sm transition-all hover:bg-button-full-hover
         ${isDragging ? 'z-10 scale-[1.01] shadow-xl opacity-90' : ''}
       `}
     >
@@ -56,8 +45,14 @@ function SessionListItem({ session, onEdit, onDelete, onOpen }: SessionListItemP
         onClick={() => onOpen(session)}
         className="flex min-w-0 items-center gap-3 text-left cursor-pointer"
       >
-        {/* Temporary puzzle icon */}
-        <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded bg-accent text-[10px] mr-5 ml-1.25"></div>
+        <div className="ml-1.25 mr-5">
+          <div
+            className="flex h-7 w-7 items-center justify-center rounded"
+            style={{ backgroundColor: `${PUZZLES[session.puzzle].color}` }}
+          >
+            <img src={PUZZLES[session.puzzle].logo} alt={PUZZLES[session.puzzle].label} className="h-5 w-5" />
+          </div>
+        </div>
 
         <div className="min-w-0">
           <p className="truncate text-primary">{session.name}</p>
