@@ -36,7 +36,7 @@ function SessionList({ sessions, onChange, onEdit, onDelete, onOpen }: SessionLi
       onDragCancel={handleDragCancel}
     >
       <SortableContext items={sessions.map((session) => session.id)} strategy={verticalListSortingStrategy}>
-        <div className="flex flex-col gap-1.5">
+        <div className="flex flex-col gap-1.5 mt-3">
           {sessions.map((session) => (
             <SessionListItem key={session.id} session={session} onEdit={onEdit} onDelete={onDelete} onOpen={onOpen} />
           ))}

@@ -39,6 +39,11 @@ function SessionModal({ open, mode, session, onClose, onSubmit }: SessionModalPr
     <Modal open={open} title={mode === 'create' ? 'Create Session' : 'Edit Session'} onClose={onClose} width="max-w-lg">
       <div className="space-y-3">
         <div>
+          <label className="mb-2 block text-sm text-secondary">Puzzle</label>
+          <Dropdown value={puzzle} options={puzzleOptions} onChange={setPuzzle} width="w-50" />
+        </div>
+
+        <div>
           <label className="mb-2 block text-sm text-secondary">Name</label>
           <input
             value={name}
@@ -57,11 +62,6 @@ function SessionModal({ open, mode, session, onClose, onSubmit }: SessionModalPr
             onChange={(e) => setDescription(e.target.value)}
             className="w-full resize-none rounded-md border border-divider bg-button-empty px-3 py-2 outline-none focus:border-primary"
           />
-        </div>
-
-        <div>
-          <label className="mb-2 block text-sm text-secondary">Puzzle</label>
-          <Dropdown value={puzzle} options={puzzleOptions} onChange={setPuzzle} width="w-50" />
         </div>
 
         <div className="flex justify-center gap-5 pt-2 mt-5">

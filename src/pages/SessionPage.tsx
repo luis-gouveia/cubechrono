@@ -100,13 +100,13 @@ function SessionPage() {
   }
 
   return (
-    <main className="h-full w-full overflow-y-auto bg-background text-primary">
+    <main className="h-full w-full overflow-y-auto bg-background text-primary scrollbar-hidden">
       <div className="mx-auto w-full max-w-3xl px-6 py-6">
         <header className="mb-6">
           <button
             type="button"
             onClick={() => navigate('/sessions')}
-            className="mb-6 flex cursor-pointer items-center gap-2 text-sm text-secondary transition-colors hover:text-primary"
+            className="mb-3 flex cursor-pointer items-center gap-2 text-sm text-secondary transition-colors hover:text-primary"
           >
             <ArrowLeft size={15} />
             <span>back to sessions</span>
@@ -115,7 +115,7 @@ function SessionPage() {
           <div className="flex items-start justify-between gap-4">
             <div className="min-w-0">
               <div className="flex items-center gap-3">
-                <h1 className="truncate text-2xl font-medium">{session.name}</h1>
+                <h1 className="truncate text-3xl font-medium">{session.name}</h1>
                 <div>
                   <div
                     className="flex h-6 w-6 items-center justify-center rounded"
@@ -135,7 +135,7 @@ function SessionPage() {
                 onClick={() => setShowEditModal(true)}
                 className="cursor-pointer rounded-md px-1 py-2 text-secondary transition-colors hover:text-primary"
               >
-                <Pencil size={15} />
+                <Pencil size={16} />
               </button>
               <button
                 type="button"
@@ -143,7 +143,7 @@ function SessionPage() {
                 onClick={() => setShowDeleteModal(true)}
                 className="cursor-pointer rounded-md px-1 py-2 text-secondary transition-colors hover:text-primary"
               >
-                <Trash2 size={15} />
+                <Trash2 size={16} />
               </button>
 
               <SessionModal
@@ -164,7 +164,7 @@ function SessionPage() {
 
         {/* Session stats */}
         <section className="mb-6 grid grid-cols-4 gap-2">
-          <div className="rounded-md border col-span-2 border-divider bg-background px-4 py-3">
+          <div className="rounded-md border col-span-4 sm:col-span-2 border-divider bg-background px-4 py-3">
             <div className="grid grid-cols-3">
               <div className="col-span-3 flex justify-center items-center mb-2">
                 <Trophy size={15} className="text-yellow-400 mx-1" />
@@ -187,7 +187,7 @@ function SessionPage() {
               </div>
             </div>
           </div>
-          <div className="rounded-md border col-span-1 border-divider bg-background px-4 py-3">
+          <div className="rounded-md border col-span-2 sm:col-span-1 border-divider bg-background px-4 py-3">
             <div className="grid grid-cols-2">
               <div className="col-span-2 flex justify-center items-center mb-3">
                 <Hash size={15} className="text-blue-400 mx-1" />
@@ -203,7 +203,7 @@ function SessionPage() {
               </div>
             </div>
           </div>
-          <div className="rounded-md border col-span-1 border-divider bg-background px-4 py-3">
+          <div className="rounded-md border col-span-2 sm:col-span-1 border-divider bg-background px-4 py-3">
             <div className="grid grid-cols-2">
               <div className="col-span-2 flex justify-center items-center mb-3">
                 <TriangleAlert size={15} className="text-red-400 mx-1" />
@@ -231,6 +231,9 @@ function SessionPage() {
             <span className="text-center mr-5">Date</span>
           </div>
           <div className="max-h-[50vh] overflow-y-auto scrollbar">
+            {solves.length === 0 && (
+              <div className="text-center text-secondary text-sm mt-5">There are no solves in this session</div>
+            )}
             {solves.map((solve) => (
               <div
                 key={solve.id}

@@ -163,9 +163,9 @@ function SessionsPage() {
   }
 
   return (
-    <main className="h-full w-full overflow-y-auto bg-background text-primary">
+    <main className="h-full w-full overflow-y-auto bg-background text-primary scrollbar-hidden">
       <div className="mx-auto w-full max-w-3xl px-6 py-6">
-        <header className="mt-5 mb-5 flex items-center justify-between">
+        <header className="mb-8 flex items-center justify-between">
           <h1 className="text-3xl font-medium">Sessions</h1>
 
           <button
@@ -174,7 +174,7 @@ function SessionsPage() {
             className="cursor-pointer rounded-md p-2 text-primary transition-colors hover:bg-button-empty-hover hover:text-primary"
             title="Create session"
           >
-            <Plus size={20} />
+            <Plus size={22} />
           </button>
         </header>
 

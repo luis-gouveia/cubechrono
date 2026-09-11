@@ -26,7 +26,7 @@ function SessionListItem({ session, onEdit, onDelete, onOpen }: SessionListItemP
         transition: isDragging ? undefined : 'transform 120ms cubic-bezier(0.2, 0, 0, 1)',
       }}
       className={`
-        grid grid-cols-[32px_minmax(0,1fr)_64px_64px_96px_56px] items-center gap-2 rounded-md border border-divider bg-background px-2 py-2 text-sm transition-all hover:bg-button-full-hover
+        grid grid-cols-[32px_minmax(0,1fr)_64px_64px_96px_56px] items-center gap-2 rounded-md border border-divider bg-background px-2 py-3 text-sm transition-all hover:bg-button-full-hover
         ${isDragging ? 'z-10 scale-[1.01] shadow-xl opacity-90' : ''}
       `}
     >

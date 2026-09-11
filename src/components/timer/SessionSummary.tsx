@@ -43,7 +43,7 @@ function SessionSummary({ puzzle, stats }: SessionSummaryProps) {
           <p className="text-sm text-secondary">ao5</p>
           <p className="text-sm text-secondary">ao12</p>
         </div>
-        <div className="grid grid-cols-3 gap-4 text-center">
+        <div className="grid grid-cols-3 gap-4 text-center text-primary">
           <p className="text-lg">{formatTime(stats.current.single)}</p>
           <p className="text-lg">{formatTime(stats.current.ao5)}</p>
           <p className="text-lg">{formatTime(stats.current.ao12)}</p>
@@ -57,7 +57,7 @@ function SessionSummary({ puzzle, stats }: SessionSummaryProps) {
           <p className="text-sm text-secondary">ao5</p>
           <p className="text-sm text-secondary">ao12</p>
         </div>
-        <div className="grid grid-cols-3 gap-4 text-center">
+        <div className="grid grid-cols-3 gap-4 text-center text-primary">
           <p className="text-lg">{formatTime(stats.best.single.value)}</p>
           <p className="text-lg">{formatTime(stats.best.ao5.value)}</p>
           <p className="text-lg">{formatTime(stats.best.ao12.value)}</p>

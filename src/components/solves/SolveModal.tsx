@@ -47,8 +47,8 @@ function SolveModal({ open, solve, onClose, onDelete, onUpdate }: SolveModalProp
     <Modal open={open} onClose={onClose} title="Solve" width="max-w-xl">
       <div className="space-y-6">
         <section className="grid grid-cols-1 text-center">
-          <p className="leading-6">{solve.scramble}</p>
-          <p className="text-5xl my-3">{formatTime(solve.time, penalty, 'full')}</p>
+          <p className="leading-6 text-primary">{solve.scramble}</p>
+          <p className="text-5xl my-3 text-primary">{formatTime(solve.time, penalty, 'full')}</p>
           <p className="text-secondary text-xs">{formatDateTime(solve.createdAt)}</p>
           <div className="text-center mt-2">
             <button
