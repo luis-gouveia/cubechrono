@@ -6,7 +6,7 @@ export function formatTime(
   format: 'compact' | 'full' = 'compact',
 ): string {
   let result = '-'
-  if (milliseconds) {
+  if (milliseconds !== undefined) {
     if (milliseconds < 0) throw new Error('Time cannot be negative')
 
     const minutes = Math.floor(milliseconds / 60_000)
