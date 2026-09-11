@@ -1,6 +1,7 @@
 import AppLayout from '../components/layout/AppLayout'
 import SessionPage from '../pages/SessionPage'
 import SessionsPage from '../pages/SessionsPage'
+import SettingsPage from '../pages/SettingsPage'
 import StatsPage from '../pages/StatsPage'
 import TimerPage from '../pages/TimerPage'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
@@ -14,7 +15,7 @@ function AppRouter() {
           <Route path="/sessions" element={<SessionsPage />} />
           <Route path="/sessions/:sessionId" element={<SessionPage />} />
           <Route path="/statistics" element={<StatsPage />} />
-          <Route path="/settings" element={<TimerPage />} />
+          <Route path="/settings" element={<SettingsPage />} />
         </Routes>
       </AppLayout>
     </BrowserRouter>
