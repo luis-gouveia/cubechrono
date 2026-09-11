@@ -15,5 +15,5 @@ export const DEFAULT_SETTINGS: Settings = {
   showCurrentStats: true,
   showScramble: true,
   inspectionTime: false,
-  focusMode: false,
+  focusMode: true,
 }
