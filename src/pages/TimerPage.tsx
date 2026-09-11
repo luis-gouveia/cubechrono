@@ -65,7 +65,7 @@ function TimerPage() {
   return (
     <div className="relative h-full w-full overflow-hidden">
       {settings.showTimerSidePanel && (
-        <div className="fixed left-16 top-0 h-screen">
+        <div className="fixed left-15.25 top-0 h-screen">
           <TimerSidePanel
             puzzle={puzzle}
             stats={{
@@ -110,43 +110,45 @@ function TimerPage() {
       )}
       <main
         className={`
-          flex h-full flex-col items-center overflow-hidden bg-background text-primary
+          flex h-full flex-col justify-between overflow-hidden bg-background text-primary pl-10
           ${settings.showTimerSidePanel ? 'ml-64 w-[calc(100%-16rem)]' : 'w-full'}
         `}
       >
-        {!isFocusActive && (
-          <div className="flex w-full items-center justify-center gap-2 pt-2">
-            <Dropdown value={session} options={sessionOptions} onChange={setSession} align="center" width="w-60" />
-            <Dropdown value={puzzle} options={puzzleOptions} onChange={setPuzzle} align="center" width="w-35" />
-          </div>
-        )}
-        {!isFocusActive && (
-          <div className="mt-5 flex w-full max-w-3xl flex-col items-center px-6 text-center">
-            <p className="text-lg leading-6 tracking-widest text-primary">{scramble}</p>
+        <div className="flex flex-col items-center">
+          {!isFocusActive && (
+            <div className="flex w-full items-center justify-center gap-2 pt-2">
+              <Dropdown value={session} options={sessionOptions} onChange={setSession} align="center" width="w-60" />
+              <Dropdown value={puzzle} options={puzzleOptions} onChange={setPuzzle} align="center" width="w-35" />
+            </div>
+          )}
+          {!isFocusActive && (
+            <div className="mt-5 flex w-full max-w-3xl flex-col items-center px-6 text-center">
+              <p className="text-lg leading-6 tracking-widest text-primary">{scramble}</p>
 
-            <div className="mt-3 flex items-center gap-1">
-              <button
-                type="button"
-                onClick={copyScramble}
-                title={copied ? 'Copied!' : 'Copy scramble'}
-                className={`
+              <div className="mt-3 flex items-center gap-1">
+                <button
+                  type="button"
+                  onClick={copyScramble}
+                  title={copied ? 'Copied!' : 'Copy scramble'}
+                  className={`
                   cursor-pointer rounded-md p-1.5 transition-colors
                   ${copied ? 'text-green-400' : 'text-secondary hover:bg-button-empty-hover hover:text-primary'}
                 `}
-              >
-                {copied ? <Check size={15} /> : <Copy size={15} />}
-              </button>
-              <button
-                type="button"
-                onClick={() => generateScramble()}
-                title="New scramble"
-                className="cursor-pointer rounded-md p-1.5 text-secondary transition-colors hover:bg-button-empty-hover hover:text-primary"
-              >
-                <RefreshCw size={15} />
-              </button>
+                >
+                  {copied ? <Check size={15} /> : <Copy size={15} />}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => generateScramble()}
+                  title="New scramble"
+                  className="cursor-pointer rounded-md p-1.5 text-secondary transition-colors hover:bg-button-empty-hover hover:text-primary"
+                >
+                  <RefreshCw size={15} />
+                </button>
+              </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
         <div
           className={
             isFocusActive
@@ -164,12 +166,18 @@ function TimerPage() {
                   <span>ao12: 6.32</span>
                 </div>
               )}
+            </>
+          )}
+        </div>
+        <div>
+          {!isFocusActive && (
+            <div>
               {settings.showScramble && scramble && (
-                <div className=" mt-[15vh] flex h-50 w-full shrink-0 justify-center">
+                <div className="flex h-50 w-full shrink-0 justify-center mb-5">
                   <PuzzleRenderer alg={scramble} puzzle={puzzle} />
                 </div>
               )}
-            </>
+            </div>
           )}
         </div>
       </main>
