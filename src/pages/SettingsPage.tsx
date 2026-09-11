@@ -1,17 +1,13 @@
-import { useState } from 'react'
 import Dropdown from '../components/common/Dropdown'
-import { DEFAULT_SETTINGS, Settings } from '../types/settings'
+import { Settings } from '../types/settings'
 import { THEME_OPTIONS } from '../types/theme'
+import { useSettings } from '../hooks/useSettings'
+import { useState } from 'react'
+import ResetSettingsModal from '../components/settings/ResetSettingsModal'
 
 function SettingsPage() {
-  const [settings, setSettings] = useState<Settings>(DEFAULT_SETTINGS)
-
-  const updateSetting = <K extends keyof Settings>(key: K, value: Settings[K]) => {
-    setSettings((previous) => ({
-      ...previous,
-      [key]: value,
-    }))
-  }
+  const { settings, updateSetting, resetSettings } = useSettings()
+  const [showResetModal, setShowResetModal] = useState(false)
 
   return (
     <main className="h-full w-full overflow-y-auto bg-background text-primary scrollbar-hidden">
@@ -77,8 +73,26 @@ function SettingsPage() {
               />
             </div>
           </section>
+
+          <section>
+            <h2 className="mb-3 text-sm font-medium text-secondary">Reset</h2>
+            <div className="flex items-center justify-between gap-6 rounded-lg border border-divider px-4 py-3">
+              <div className="min-w-0">
+                <p className="text-sm">Reset settings</p>
+                <p className="mt-0.5 text-xs text-secondary">Restore all settings to their default values</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowResetModal(true)}
+                className="cursor-pointer rounded-md border border-divider px-4 py-2 text-sm text-secondary transition-colors hover:border-red-400/50 hover:bg-red-400/10 hover:text-red-400"
+              >
+                Reset settings
+              </button>
+            </div>
+          </section>
         </div>
       </div>
+      <ResetSettingsModal open={showResetModal} onClose={() => setShowResetModal(false)} onConfirm={resetSettings} />
     </main>
   )
 }

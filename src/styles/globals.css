@@ -15,6 +15,26 @@
   --accent: 43, 157, 161;
 }
 
+[data-theme="dark"] {
+  --background: 36, 36, 36;
+  --primary: 255, 255, 255;
+  --secondary: 115, 115, 115;
+  --button-full: 46, 50, 54, 50;
+  --button-full-hover: 58, 63, 68, 0.65;
+  --button-empty-hover: 39, 39, 42;
+  --divider: 82 , 82, 92, 0.4;
+}
+
+[data-theme="light"] {
+  --background: 241,	243,	245;
+  --primary: 24, 24, 27;
+  --secondary: 113, 113, 122;
+  --button-full: 228, 228, 231, 0.65;
+  --button-full-hover: 212, 212, 216, 0.8;
+  --button-empty-hover: 228, 228, 231;
+  --divider: 161, 161, 170, 0.35;
+}
+
 /* Scrollbar styling */
 .scrollbar {
   scrollbar-width: thin;
