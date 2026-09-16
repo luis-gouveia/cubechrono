@@ -27,6 +27,7 @@ function SessionModal({ open, mode, session, onClose, onSubmit }: SessionModalPr
       name,
       description: description || undefined,
       puzzle,
+      position: 0,
     }
     const newSession = mode === 'create' ? Session.create(input) : Session.create({ ...input })
     // TODO: Session.from({

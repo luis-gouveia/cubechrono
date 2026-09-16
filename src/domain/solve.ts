@@ -4,19 +4,20 @@ import { puzzleSchema } from './puzzle'
 
 export const SOLVE_PENALTY = ['none', '+2', 'DNF'] as const
 
-export const createSolveSchema = z.object({
+export const solveSchema = z.object({
+  sessionId: z.uuid(),
   time: z.number().positive(),
   penalty: z.enum(SOLVE_PENALTY),
   scramble: z.string().min(1).max(500),
   puzzle: puzzleSchema,
   comment: z.string().max(255).optional(),
 })
-export type CreateSolveProps = z.infer<typeof createSolveSchema>
+export type CreateSolveProps = z.infer<typeof solveSchema>
 export type SolveProps = EntityProps & CreateSolveProps
 
-export class Solve extends Entity<SolveProps, typeof createSolveSchema.shape> {
+export class Solve extends Entity<SolveProps, typeof solveSchema.shape> {
   private constructor(input: SolveProps | CreateSolveProps) {
-    super(input, createSolveSchema)
+    super(input, solveSchema)
   }
 
   static create(input: CreateSolveProps) {
@@ -25,6 +26,10 @@ export class Solve extends Entity<SolveProps, typeof createSolveSchema.shape> {
 
   static from(input: SolveProps) {
     return new Solve(input)
+  }
+
+  get sessionId() {
+    return this.props.sessionId
   }
 
   get id() {
@@ -64,5 +69,12 @@ export class Solve extends Entity<SolveProps, typeof createSolveSchema.shape> {
       default:
         return this.time
     }
+  }
+
+  public update(input: Partial<Pick<CreateSolveProps, 'penalty' | 'comment'>>): void {
+    const validated = solveSchema.parse({ ...this.props, ...input })
+
+    this.props.penalty = validated.penalty
+    this.props.comment = validated.comment
   }
 }

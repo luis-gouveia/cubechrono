@@ -1,24 +1,21 @@
-import { ipcRenderer, contextBridge } from 'electron'
+import { contextBridge, ipcRenderer } from 'electron'
+import { IPC_CHANNELS } from './ipc/channels'
+import type { ElectronApi } from '../src/types/ipc/electron'
 
-// --------- Expose some API to the Renderer process ---------
-contextBridge.exposeInMainWorld('ipcRenderer', {
-  on(...args: Parameters<typeof ipcRenderer.on>) {
-    const [channel, listener] = args
-    return ipcRenderer.on(channel, (event, ...args) => listener(event, ...args))
+const api: ElectronApi = {
+  sessions: {
+    list: () => ipcRenderer.invoke(IPC_CHANNELS.sessions.list),
+    get: (id) => ipcRenderer.invoke(IPC_CHANNELS.sessions.get, id),
+    create: (input) => ipcRenderer.invoke(IPC_CHANNELS.sessions.create, input),
+    update: (input) => ipcRenderer.invoke(IPC_CHANNELS.sessions.update, input),
+    delete: (id) => ipcRenderer.invoke(IPC_CHANNELS.sessions.delete, id),
   },
-  off(...args: Parameters<typeof ipcRenderer.off>) {
-    const [channel, ...omit] = args
-    return ipcRenderer.off(channel, ...omit)
+  solves: {
+    list: (sessionId) => ipcRenderer.invoke(IPC_CHANNELS.solves.list, sessionId),
+    create: (input) => ipcRenderer.invoke(IPC_CHANNELS.solves.create, input),
+    update: (input) => ipcRenderer.invoke(IPC_CHANNELS.solves.update, input),
+    delete: (id) => ipcRenderer.invoke(IPC_CHANNELS.solves.delete, id),
   },
-  send(...args: Parameters<typeof ipcRenderer.send>) {
-    const [channel, ...omit] = args
-    return ipcRenderer.send(channel, ...omit)
-  },
-  invoke(...args: Parameters<typeof ipcRenderer.invoke>) {
-    const [channel, ...omit] = args
-    return ipcRenderer.invoke(channel, ...omit)
-  },
+}
 
-  // You can expose other APTs you need here.
-  // ...
-})
+contextBridge.exposeInMainWorld('api', api)

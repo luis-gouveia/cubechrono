@@ -10,6 +10,7 @@ function SolveTable({ solves }: { solves: SolveItem[] }) {
   const handleSelectSolve = (solve: SolveItem) => {
     const solveEntity = Solve.from({
       id: crypto.randomUUID(),
+      sessionId: crypto.randomUUID(),
       time: solve.time,
       penalty: 'none',
       scramble: "D' R2 D B2 R2 D L2 F2 L2 U2 L' U' B' F L U L' R' D F'",

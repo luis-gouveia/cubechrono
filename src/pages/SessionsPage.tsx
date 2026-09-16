@@ -214,6 +214,7 @@ function SessionsPage() {
             name: editingSession.name,
             description: editingSession.description,
             puzzle: editingSession.puzzle,
+            position: 0,
             createdAt: editingSession.createdAt,
           })}
           onClose={() => setEditingSession(null)}
