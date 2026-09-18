@@ -52,6 +52,10 @@ export class SolveRepo {
     this.db.prepare(`DELETE FROM solves WHERE id = ?`).run(id)
   }
 
+  public deleteBySessionId(id: string): void {
+    this.db.prepare(`DELETE FROM solves WHERE session_id = ?`).run(id)
+  }
+
   public getByPuzzle(puzzle: Puzzle): Solve[] {
     const rows = this.db
       .prepare(`SELECT * FROM solves WHERE puzzle = ? ORDER BY created_at ASC`)

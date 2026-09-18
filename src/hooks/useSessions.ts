@@ -63,6 +63,21 @@ export function useSessions() {
     [loadSessions],
   )
 
+  const clearSession = useCallback(
+    async (id: string) => {
+      setError(null)
+      try {
+        await window.api.sessions.clear(id)
+        await loadSessions()
+      } catch (error) {
+        const normalizedError = error instanceof Error ? error : new Error('Failed to clear session')
+        setError(normalizedError)
+        throw normalizedError
+      }
+    },
+    [loadSessions],
+  )
+
   useEffect(() => {
     void loadSessions()
   }, [loadSessions])
@@ -75,5 +90,6 @@ export function useSessions() {
     createSession,
     updateSession,
     deleteSession,
+    clearSession,
   }
 }

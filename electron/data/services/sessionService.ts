@@ -48,7 +48,7 @@ export class SessionService {
     const session = this.sessionRepo.getById(id)
     if (!session) throw new Error('Session not found!')
 
-    if (updatedFields.position && updatedFields.position !== session.position) {
+    if (updatedFields.position !== undefined && updatedFields.position !== session.position) {
       const sessions = this.sessionRepo.getAll()
       this.reorderSessions(session, sessions)
     }
@@ -67,6 +67,12 @@ export class SessionService {
 
     this.sessionRepo.delete(id)
     this.reorderSessions(session, sessions)
+  }
+
+  public clear(id: string): void {
+    const session = this.sessionRepo.getById(id)
+    if (!session) throw new Error('Session not found!')
+    this.solveRepo.deleteBySessionId(id)
   }
 
   private reorderSessions(session: Session, sessions: Session[]): void {

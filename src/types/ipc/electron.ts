@@ -10,6 +10,7 @@ export interface ElectronApi {
     create(input: CreateSessionDTO): Promise<SessionDTO>
     update(input: UpdateSessionDTO): Promise<SessionDTO>
     delete(id: string): Promise<void>
+    clear(id: string): Promise<void>
   }
   solves: {
     list(sessionId: string): Promise<SolveDTO[]>

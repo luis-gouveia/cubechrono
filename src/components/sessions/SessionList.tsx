@@ -1,18 +1,18 @@
 import { DndContext, closestCenter, DragOverlay, type DragEndEvent, type DragStartEvent } from '@dnd-kit/core'
-import { SortableContext, verticalListSortingStrategy, arrayMove } from '@dnd-kit/sortable'
+import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import { useState } from 'react'
 import SessionListItem from './SessionListItem'
-import type { SessionListItem as Session } from '../../types/session'
+import { SessionDTO } from '../../types/dtos/session'
 
 interface SessionListProps {
-  sessions: Session[]
-  onChange: (sessions: Session[]) => void
-  onEdit: (session: Session) => void
-  onDelete: (session: Session) => void
-  onOpen: (session: Session) => void
+  sessions: SessionDTO[]
+  onReorder: (session: SessionDTO) => void
+  onEdit: (session: SessionDTO) => void
+  onDelete: (session: SessionDTO) => void
+  onOpen: (session: SessionDTO) => void
 }
 
-function SessionList({ sessions, onChange, onEdit, onDelete, onOpen }: SessionListProps) {
+function SessionList({ sessions, onReorder, onEdit, onDelete, onOpen }: SessionListProps) {
   const [activeId, setActiveId] = useState<string | null>(null)
   const activeSession = sessions.find((session) => session.id === activeId)
 
@@ -25,7 +25,8 @@ function SessionList({ sessions, onChange, onEdit, onDelete, onOpen }: SessionLi
     const oldIndex = sessions.findIndex((session) => session.id === active.id)
     const newIndex = sessions.findIndex((session) => session.id === over.id)
     if (oldIndex === -1 || newIndex === -1) return
-    onChange(arrayMove(sessions, oldIndex, newIndex))
+    const session = sessions[oldIndex]
+    onReorder({ ...session, position: newIndex })
   }
 
   return (
@@ -42,7 +43,6 @@ function SessionList({ sessions, onChange, onEdit, onDelete, onOpen }: SessionLi
           ))}
         </div>
       </SortableContext>
-
       <DragOverlay dropAnimation={null}>
         {activeSession ? (
           <SessionListItem session={activeSession} onEdit={() => {}} onDelete={() => {}} onOpen={() => {}} />

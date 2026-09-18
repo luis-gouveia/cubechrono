@@ -5,6 +5,7 @@ export const IPC_CHANNELS = {
     create: 'sessions:create',
     update: 'sessions:update',
     delete: 'sessions:delete',
+    clear: 'sessions:clear',
   },
   solves: {
     list: 'solves:list',

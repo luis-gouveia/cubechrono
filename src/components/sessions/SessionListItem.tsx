@@ -1,16 +1,16 @@
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { Pencil, Trash2, GripVertical } from 'lucide-react'
-import type { SessionListItem as Session } from '../../types/session'
 import { formatDate } from '../../utils/date'
 import { formatTime } from '../../utils/time'
 import { PUZZLES } from '../../domain/puzzle'
+import { SessionDTO } from '../../types/dtos/session'
 
 interface SessionListItemProps {
-  session: Session
-  onEdit: (session: Session) => void
-  onDelete: (session: Session) => void
-  onOpen: (session: Session) => void
+  session: SessionDTO
+  onEdit: (session: SessionDTO) => void
+  onDelete: (session: SessionDTO) => void
+  onOpen: (session: SessionDTO) => void
 }
 
 function SessionListItem({ session, onEdit, onDelete, onOpen }: SessionListItemProps) {
@@ -60,12 +60,12 @@ function SessionListItem({ session, onEdit, onDelete, onOpen }: SessionListItemP
         </div>
       </button>
 
-      <span className={`text-xs text-${session.solves.completed === 0 ? 'secondary' : 'primary'} text-center`}>
-        {session.solves.completed === 0 ? '--' : `${session.solves.completed}/${session.solves.total}`}
+      <span className={`text-xs text-${session.stats?.solves.completed ? 'primary' : 'secondary'} text-center`}>
+        {session.stats?.solves.completed ? `${session.stats?.solves.completed}/${session.stats?.solves.total}` : '--'}
       </span>
 
-      <span className={`text-xs text-${session.mean ? 'primary' : 'secondary'} text-center`}>
-        {session.mean ? formatTime(session.mean) : '--'}
+      <span className={`text-xs text-${session.stats?.mean ? 'primary' : 'secondary'} text-center`}>
+        {session.stats?.mean ? formatTime(session.stats?.mean) : '--'}
       </span>
 
       <span className="text-xs text-primary text-center">{formatDate(session.createdAt)}</span>

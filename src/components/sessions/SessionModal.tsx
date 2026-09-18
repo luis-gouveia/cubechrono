@@ -1,16 +1,24 @@
 import { useState } from 'react'
 import Modal from '../common/Modal'
 import Dropdown from '../common/Dropdown'
-import { Session, type CreateSessionProps } from '../../domain/session'
 import { PUZZLES } from '../../domain/puzzle'
+import { CreateSessionDTO, SessionDTO, UpdateSessionDTO } from '../../types/dtos/session'
 
-interface SessionModalProps {
-  open: boolean
-  mode: 'create' | 'edit'
-  session?: Session
-  onClose: () => void
-  onSubmit: (session: Session) => void
-}
+type SessionModalProps =
+  | {
+      open: boolean
+      mode: 'create'
+      session?: SessionDTO
+      onClose: () => void
+      onSubmit: (session: CreateSessionDTO) => void
+    }
+  | {
+      open: boolean
+      mode: 'edit'
+      session?: SessionDTO
+      onClose: () => void
+      onSubmit: (session: UpdateSessionDTO) => void
+    }
 
 function SessionModal({ open, mode, session, onClose, onSubmit }: SessionModalProps) {
   const [name, setName] = useState(session?.name ?? '')
@@ -23,16 +31,14 @@ function SessionModal({ open, mode, session, onClose, onSubmit }: SessionModalPr
   }))
 
   const handleSubmit = () => {
-    const input: CreateSessionProps = {
+    const input = {
       name,
       description: description || undefined,
       puzzle,
-      position: 0,
     }
-    const newSession = mode === 'create' ? Session.create(input) : Session.create({ ...input })
-    // TODO: Session.from({
 
-    onSubmit(newSession)
+    if (mode === 'create') onSubmit(input)
+    else onSubmit({ ...input, id: session!.id })
     onClose()
   }
 

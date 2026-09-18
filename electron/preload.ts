@@ -9,6 +9,7 @@ const api: ElectronApi = {
     create: (input) => ipcRenderer.invoke(IPC_CHANNELS.sessions.create, input),
     update: (input) => ipcRenderer.invoke(IPC_CHANNELS.sessions.update, input),
     delete: (id) => ipcRenderer.invoke(IPC_CHANNELS.sessions.delete, id),
+    clear: (id) => ipcRenderer.invoke(IPC_CHANNELS.sessions.clear, id),
   },
   solves: {
     list: (sessionId) => ipcRenderer.invoke(IPC_CHANNELS.solves.list, sessionId),
