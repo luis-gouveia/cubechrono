@@ -2,25 +2,38 @@ import { Session } from '../../../src/domain/session'
 import { SessionRepo } from '../repos/sessionRepo'
 import { CreateSessionDTO, SessionDTO, UpdateSessionDTO } from '../../../src/types/dtos/session'
 import { SessionMapper } from '../mappers/sessionMapper'
+import { StatisticsCalculator } from '../statistics/statisticsCalculator'
+import { SolveRepo } from '../repos/solveRepo'
 
 export class SessionService {
   private readonly sessionRepo: SessionRepo
+  private readonly solveRepo: SolveRepo
   private readonly sessionMapper: SessionMapper
+  private readonly statisticsCalculator: StatisticsCalculator
 
-  constructor(sessionRepo: SessionRepo, sessionMapper: SessionMapper) {
+  constructor(
+    sessionRepo: SessionRepo,
+    solveRepo: SolveRepo,
+    sessionMapper: SessionMapper,
+    statisticsCalculator: StatisticsCalculator,
+  ) {
     this.sessionRepo = sessionRepo
+    this.solveRepo = solveRepo
     this.sessionMapper = sessionMapper
+    this.statisticsCalculator = statisticsCalculator
   }
 
   public getById(id: string): SessionDTO {
     const session = this.sessionRepo.getById(id)
     if (!session) throw new Error('Session not found!')
-    return this.sessionMapper.toDTO(session)
+    return this.sessionMapper.toDTO(session, this.getStats(session.id))
   }
 
   public getAll(): SessionDTO[] {
     const sessions = this.sessionRepo.getAll()
-    return sessions.map(this.sessionMapper.toDTO)
+    return sessions.map((session) => {
+      return this.sessionMapper.toDTO(session, this.getStats(session.id))
+    })
   }
 
   public create(input: CreateSessionDTO): SessionDTO {
@@ -64,5 +77,10 @@ export class SessionService {
         this.sessionRepo.save(sessionToReorder)
       }
     })
+  }
+
+  private getStats(sessionId: string) {
+    const solves = this.solveRepo.getBySessionId(sessionId)
+    return this.statisticsCalculator.calculateSessionStats(solves)
   }
 }

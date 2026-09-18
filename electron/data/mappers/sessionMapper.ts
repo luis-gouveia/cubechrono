@@ -1,6 +1,7 @@
 import { Puzzle } from '../../../src/domain/puzzle'
 import { Session } from '../../../src/domain/session'
 import type { SessionDTO } from '../../../src/types/dtos/session'
+import { SessionStatsDTO } from '../../../src/types/dtos/statistics'
 import { SessionModel } from '../repos/models/session'
 
 export class SessionMapper {
@@ -26,13 +27,14 @@ export class SessionMapper {
     }
   }
 
-  public toDTO(session: Session): SessionDTO {
+  public toDTO(session: Session, stats?: SessionStatsDTO): SessionDTO {
     return {
       id: session.id,
       name: session.name,
       description: session.description,
       puzzle: session.puzzle,
       position: session.position,
+      stats,
       createdAt: session.createdAt.toISOString(),
     }
   }

@@ -1,6 +1,7 @@
 import { Puzzle } from '../../../src/domain/puzzle'
 import { Solve } from '../../../src/domain/solve'
 import type { SolveDTO } from '../../../src/types/dtos/solve'
+import { SolveStatsDTO } from '../../../src/types/dtos/statistics'
 import { SolvePenalty } from '../../../src/types/solve'
 import { SolveModel } from '../repos/models/solve'
 
@@ -31,7 +32,7 @@ export class SolveMapper {
     }
   }
 
-  public toDTO(solve: Solve): SolveDTO {
+  public toDTO(solve: Solve, stats?: SolveStatsDTO): SolveDTO {
     return {
       id: solve.id,
       sessionId: solve.sessionId,
@@ -40,6 +41,7 @@ export class SolveMapper {
       puzzle: solve.puzzle,
       scramble: solve.scramble,
       comment: solve.comment,
+      stats,
       createdAt: solve.createdAt.toISOString(),
     }
   }

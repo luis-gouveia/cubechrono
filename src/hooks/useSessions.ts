@@ -1,0 +1,79 @@
+import { useCallback, useEffect, useState } from 'react'
+import { CreateSessionDTO, SessionDTO, UpdateSessionDTO } from '../types/dtos/session'
+
+export function useSessions() {
+  const [sessions, setSessions] = useState<SessionDTO[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<Error | null>(null)
+
+  const loadSessions = useCallback(async () => {
+    setLoading(true)
+    setError(null)
+    try {
+      const result = await window.api.sessions.list()
+      setSessions(result)
+    } catch (error) {
+      setError(error instanceof Error ? error : new Error('Failed to load sessions'))
+    } finally {
+      setLoading(false)
+    }
+  }, [])
+
+  const createSession = useCallback(async (input: CreateSessionDTO) => {
+    setError(null)
+    try {
+      const session = await window.api.sessions.create(input)
+      setSessions((current) => [...current, session])
+      return session
+    } catch (error) {
+      const normalizedError = error instanceof Error ? error : new Error('Failed to create session')
+      setError(normalizedError)
+      throw normalizedError
+    }
+  }, [])
+
+  const updateSession = useCallback(
+    async (input: UpdateSessionDTO) => {
+      setError(null)
+      try {
+        const updatedSession = await window.api.sessions.update(input)
+        await loadSessions()
+        return updatedSession
+      } catch (error) {
+        const normalizedError = error instanceof Error ? error : new Error('Failed to update session')
+        setError(normalizedError)
+        throw normalizedError
+      }
+    },
+    [loadSessions],
+  )
+
+  const deleteSession = useCallback(
+    async (id: string) => {
+      setError(null)
+      try {
+        await window.api.sessions.delete(id)
+        await loadSessions()
+      } catch (error) {
+        const normalizedError = error instanceof Error ? error : new Error('Failed to delete session')
+        setError(normalizedError)
+        throw normalizedError
+      }
+    },
+    [loadSessions],
+  )
+
+  useEffect(() => {
+    void loadSessions()
+  }, [loadSessions])
+
+  return {
+    sessions,
+    loading,
+    error,
+    loadSessions,
+    createSession,
+    updateSession,
+    deleteSession,
+  }
+}

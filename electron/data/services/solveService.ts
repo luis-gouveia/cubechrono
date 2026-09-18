@@ -2,14 +2,17 @@ import { Solve } from '../../../src/domain/solve'
 import { SolveRepo } from '../repos/solveRepo'
 import { CreateSolveDTO, SolveDTO, UpdateSolveDTO } from '../../../src/types/dtos/solve'
 import { SolveMapper } from '../mappers/solveMapper'
+import { StatisticsCalculator } from '../statistics/statisticsCalculator'
 
 export class SolveService {
   private readonly solveRepo: SolveRepo
   private readonly solveMapper: SolveMapper
+  private readonly statisticsCalculator: StatisticsCalculator
 
-  constructor(solveRepo: SolveRepo, solveMapper: SolveMapper) {
+  constructor(solveRepo: SolveRepo, solveMapper: SolveMapper, statisticsCalculator: StatisticsCalculator) {
     this.solveRepo = solveRepo
     this.solveMapper = solveMapper
+    this.statisticsCalculator = statisticsCalculator
   }
 
   public getById(id: string): SolveDTO {
@@ -20,7 +23,8 @@ export class SolveService {
 
   public getBySessionId(sessionId: string): SolveDTO[] {
     const solves = this.solveRepo.getBySessionId(sessionId)
-    return solves.map(this.solveMapper.toDTO)
+    const solvesWithStats = this.statisticsCalculator.calculateSolveStats(solves)
+    return solvesWithStats.map(({ solve, stats }) => this.solveMapper.toDTO(solve, stats))
   }
 
   public create(input: CreateSolveDTO): SolveDTO {

@@ -1,6 +1,7 @@
 import { Puzzle } from '../../domain/puzzle'
 import { SolvePenalty } from '../solve'
 import { EntityDTO } from './entity'
+import { SolveStatsDTO } from './statistics'
 
 export interface SolveDTO extends EntityDTO {
   sessionId: string
@@ -9,6 +10,7 @@ export interface SolveDTO extends EntityDTO {
   scramble: string
   puzzle: Puzzle
   comment?: string
+  stats?: SolveStatsDTO
 }
 
 export interface CreateSolveDTO {

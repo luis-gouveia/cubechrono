@@ -9,6 +9,7 @@ import { SessionService } from '../services/sessionService'
 import { SolveService } from '../services/solveService'
 import { sessionMapper, solveMapper } from '../mappers'
 import { Session } from '../../../src/domain/session'
+import { StatisticsCalculator } from '../statistics/statisticsCalculator'
 
 let db: Database.Database | undefined = undefined
 
@@ -35,8 +36,9 @@ export function initializeDatabase() {
 
   const sessionRepo = new SessionRepo(database, sessionMapper)
   const solveRepo = new SolveRepo(database, solveMapper)
-  const sessionService = new SessionService(sessionRepo, sessionMapper)
-  const solveService = new SolveService(solveRepo, solveMapper)
+  const statisticsCalculator = new StatisticsCalculator()
+  const sessionService = new SessionService(sessionRepo, solveRepo, sessionMapper, statisticsCalculator)
+  const solveService = new SolveService(solveRepo, solveMapper, statisticsCalculator)
 
   ensureDefaultSession(sessionRepo)
 

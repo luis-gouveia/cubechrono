@@ -7,6 +7,7 @@ import TimerSidePanel from '../components/timer/TimerSidePanel'
 import Timer, { TimerState } from '../components/timer/Timer'
 import { Copy, RefreshCw, Check } from 'lucide-react'
 import { useSettings } from '../hooks/useSettings'
+import { useSessions } from '../hooks/useSessions'
 
 interface TimerSolve {
   id: string
@@ -27,6 +28,11 @@ function TimerPage() {
 
   const [timerState, setTimerState] = useState<TimerState>('idle')
   const isFocusActive = settings.focusMode && timerState !== 'idle'
+
+  // ===============================
+  const aa = useSessions()
+  console.log(aa.sessions)
+  // ===============================
 
   const copyScramble = async () => {
     if (!scramble) return
