@@ -1,18 +1,3 @@
-import { Puzzle } from '../domain/puzzle'
-
-export interface SessionListItem {
-  id: string
-  name: string
-  description?: string
-  puzzle: Puzzle
-  solves: {
-    completed: number
-    total: number
-  }
-  mean?: number
-  createdAt: Date
-}
-
 interface SessionRecordStat {
   value: number
   date: Date
