@@ -18,6 +18,6 @@ export interface ElectronApi {
     delete(id: string): Promise<void>
   }
   stats: {
-    getByPuzzle(puzzle: Puzzle): Promise<PuzzleStatsDTO[]>
+    getByPuzzle(puzzle: Puzzle): Promise<PuzzleStatsDTO>
   }
 }

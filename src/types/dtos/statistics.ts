@@ -8,11 +8,13 @@ export interface SessionStatsDTO {
     plusTwo: number
     dnf: number
   }
-  mean: number | null
-  best: {
-    value: number
-    completedAt: string
-  } | null
+  mean: number | undefined
+  best:
+    | {
+        value: number
+        completedAt: string
+      }
+    | undefined
   ao5: AverageResultDTO
   ao12: AverageResultDTO
   bestAo5: AverageResultDTO

@@ -33,9 +33,9 @@ export class StatisticsCalculator {
     }))
   }
 
-  private calculateMean(solves: Solve[]): number | null {
+  private calculateMean(solves: Solve[]): number | undefined {
     const times = solves.map((solve) => solve.effectiveTime).filter((time): time is number => time !== undefined)
-    if (times.length === 0) return null
+    if (times.length === 0) return undefined
 
     const total = times.reduce((sum, time) => sum + time, 0)
     return total / times.length
@@ -43,7 +43,7 @@ export class StatisticsCalculator {
 
   private calculateBestSolve(solves: Solve[]): SessionStatsDTO['best'] {
     const validSolves = solves.filter((solve) => solve.effectiveTime !== undefined)
-    if (validSolves.length === 0) return null
+    if (validSolves.length === 0) return undefined
 
     const bestSolve = validSolves.reduce((best, solve) => {
       if (solve.effectiveTime! < best.effectiveTime!) return solve

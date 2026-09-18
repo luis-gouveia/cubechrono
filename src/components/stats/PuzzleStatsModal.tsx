@@ -4,12 +4,12 @@ import { PUZZLES } from '../../domain/puzzle'
 import { formatTime } from '../../utils/time'
 import { formatDate } from '../../utils/date'
 import Modal from '../common/Modal'
-import { PuzzleStats } from '../../types/stats'
+import { PuzzleStatsDTO } from '../../types/dtos/statistics'
 
 interface PuzzleStatsModalProps {
   open: boolean
   puzzle: Puzzle
-  stats: PuzzleStats
+  stats: PuzzleStatsDTO
   onClose: () => void
 }
 
@@ -33,11 +33,13 @@ function PuzzleStatsModal({ open, puzzle, stats, onClose }: PuzzleStatsModalProp
           <div className="rounded-md border col-span-1 border-divider bg-background px-4 py-3">
             <div className="grid grid-cols-2">
               <div className="col-span-2 flex justify-center items-center mb-3">
-                <Hash size={15} className="text-blue-400 mx-2" />
+                <Hash size={15} className="text-blue-400 mr-2" />
                 <p>Solves</p>
               </div>
               <div className="col-span-2 text-center">
-                <p className="text-2xl">{stats.solves}</p>
+                <p className="text-2xl">
+                  {stats.solves.completed}/{stats.solves.total}
+                </p>
               </div>
             </div>
           </div>
@@ -60,18 +62,24 @@ function PuzzleStatsModal({ open, puzzle, stats, onClose }: PuzzleStatsModalProp
               </div>
               <div className="text-center">
                 <p className="text-secondary text-xs">single</p>
-                <p className="text-2xl">{formatTime(stats.best.single?.value)}</p>
-                <p className="text-secondary text-xs">{stats.best.single ? formatDate(stats.best.single.date) : '-'}</p>
+                <p className="text-2xl">{formatTime(stats.best?.value)}</p>
+                <p className="text-secondary text-xs">{stats.best ? formatDate(stats.best.completedAt) : '-'}</p>
               </div>
               <div className="text-center">
                 <p className="text-secondary text-xs">ao5</p>
-                <p className="text-2xl">{formatTime(stats.best.ao5?.value)}</p>
-                <p className="text-secondary text-xs">{stats.best.ao5 ? formatDate(stats.best.ao5.date) : '-'}</p>
+                <p className="text-2xl">{stats.bestAo5.status === 'value' ? formatTime(stats.bestAo5?.value) : '-'}</p>
+                <p className="text-secondary text-xs">
+                  {stats.bestAo5.status === 'value' ? formatDate(stats.bestAo5.completedAt) : '-'}
+                </p>
               </div>
               <div className="text-center">
                 <p className="text-secondary text-xs">ao12</p>
-                <p className="text-2xl">{formatTime(stats.best.ao12?.value)}</p>
-                <p className="text-secondary text-xs">{stats.best.ao12 ? formatDate(stats.best.ao12.date) : '-'}</p>
+                <p className="text-2xl">
+                  {stats.bestAo12.status === 'value' ? formatTime(stats.bestAo12?.value) : '-'}
+                </p>
+                <p className="text-secondary text-xs">
+                  {stats.bestAo12.status === 'value' ? formatDate(stats.bestAo12.completedAt) : '-'}
+                </p>
               </div>
             </div>
           </div>
