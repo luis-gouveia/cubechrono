@@ -1,8 +1,8 @@
 import { Trophy, Hash, Clock4 } from 'lucide-react'
 import type { Puzzle } from '../../domain/puzzle'
 import { PUZZLES } from '../../domain/puzzle'
-import { formatTime } from '../../utils/time'
-import { formatDate } from '../../utils/date'
+import { formatTime, formatTimeAverage } from '../../utils/time'
+import { formatDate, formatDateAverage } from '../../utils/date'
 import Modal from '../common/Modal'
 import { PuzzleStatsDTO } from '../../types/dtos/statistics'
 
@@ -63,23 +63,17 @@ function PuzzleStatsModal({ open, puzzle, stats, onClose }: PuzzleStatsModalProp
               <div className="text-center">
                 <p className="text-secondary text-xs">single</p>
                 <p className="text-2xl">{formatTime(stats.best?.value)}</p>
-                <p className="text-secondary text-xs">{stats.best ? formatDate(stats.best.completedAt) : '-'}</p>
+                <p className="text-secondary text-xs">{formatDate(stats.best?.completedAt)}</p>
               </div>
               <div className="text-center">
                 <p className="text-secondary text-xs">ao5</p>
-                <p className="text-2xl">{stats.bestAo5.status === 'value' ? formatTime(stats.bestAo5?.value) : '-'}</p>
-                <p className="text-secondary text-xs">
-                  {stats.bestAo5.status === 'value' ? formatDate(stats.bestAo5.completedAt) : '-'}
-                </p>
+                <p className="text-2xl">{formatTimeAverage(stats.bestAo5)}</p>
+                <p className="text-secondary text-xs">{formatDateAverage(stats.bestAo5)}</p>
               </div>
               <div className="text-center">
                 <p className="text-secondary text-xs">ao12</p>
-                <p className="text-2xl">
-                  {stats.bestAo12.status === 'value' ? formatTime(stats.bestAo12?.value) : '-'}
-                </p>
-                <p className="text-secondary text-xs">
-                  {stats.bestAo12.status === 'value' ? formatDate(stats.bestAo12.completedAt) : '-'}
-                </p>
+                <p className="text-2xl">{formatTimeAverage(stats.bestAo12)}</p>
+                <p className="text-secondary text-xs">{formatDateAverage(stats.bestAo12)}</p>
               </div>
             </div>
           </div>

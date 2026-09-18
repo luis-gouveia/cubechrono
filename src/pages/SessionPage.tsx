@@ -1,103 +1,73 @@
 import { ArrowLeft, Pencil, Trash2, Trophy, Hash, TriangleAlert } from 'lucide-react'
 import { useNavigate, useParams } from 'react-router-dom'
-import type { SessionListItem, SessionStats } from '../types/session'
-import { formatTime } from '../utils/time'
-import { PUZZLE, PUZZLES } from '../domain/puzzle'
-import { formatDate, formatDateTime } from '../utils/date'
+import { formatTime, formatTimeAverage } from '../utils/time'
+import { PUZZLES } from '../domain/puzzle'
+import { formatDate, formatDateAverage, formatDateTime } from '../utils/date'
 import { useState } from 'react'
 import DeleteSessionModal, { DeleteSessionAction } from '../components/sessions/DeleteSessionModal'
 import SessionModal from '../components/sessions/SessionModal'
-import { Session } from '../domain/session'
-import { Solve } from '../domain/solve'
-import { SolveItem } from '../types/solve'
 import SolveModal from '../components/solves/SolveModal'
+import { useSession } from '../hooks/useSession'
+import { useSolves } from '../hooks/useSolves'
+import { UpdateSessionDTO } from '../types/dtos/session'
+import { SolveDTO, UpdateSolveDTO } from '../types/dtos/solve'
 
 function SessionPage() {
   const navigate = useNavigate()
   const { sessionId } = useParams()
 
-  const session: SessionListItem = {
-    id: crypto.randomUUID() ?? sessionId, // TODO:
-    name: 'My Session',
-    description: 'This is the description for my session',
-    puzzle: PUZZLE.THREE_BY_THREE,
-    solves: {
-      completed: 59,
-      total: 60,
-    },
-    mean: 34290,
-    createdAt: new Date('2025-10-15'),
-  }
-  const sessionStats: SessionStats = {
-    solves: {
-      completed: 59,
-      total: 60,
-    },
-    mean: 10050,
-    current: {
-      single: 10050,
-      ao5: 10050,
-      ao12: 10050,
-    },
-    best: {
-      single: { value: 10050, date: new Date() },
-      ao5: { value: 10050, date: new Date() },
-      ao12: { value: 10050, date: new Date() },
-    },
-    penalties: {
-      plus2: 3,
-      dnf: 1,
-    },
-  }
-  const solves = Array.from({ length: 40 }, (_, i) => ({
-    id: `${i}`,
-    index: 50 - i,
-    time: 10240,
-    ao5: 33412,
-    ao12: 33412,
-    scramble: "B Dw2 B' Rw' Rw' 3Rw R2 3Uw2 3Rw...",
-    date: new Date('2025-10-15T16:48:00'),
-  }))
-
   const [showDeleteModal, setShowDeleteModal] = useState(false)
-  const handleDeleteAction = (action: DeleteSessionAction) => {
+  const [showEditModal, setShowEditModal] = useState(false)
+  const [selectedSolve, setSelectedSolve] = useState<SolveDTO | undefined>(undefined)
+
+  const { session, loading: sessionLoading, updateSession, deleteSession, clearSession } = useSession(sessionId!)
+  const { solves, loading: solvesLoading, updateSolve, deleteSolve } = useSolves(sessionId!)
+  const loading = sessionLoading || solvesLoading
+
+  const handleDeleteAction = async (action: DeleteSessionAction) => {
     switch (action) {
-      case 'clear':
-        console.log('Clear solves')
-        break
       case 'delete':
-        console.log('Delete session')
+        await deleteSession()
         navigate('/sessions')
         break
+      case 'clear':
+        await clearSession()
+        break
     }
+    setShowDeleteModal(false)
   }
-  const [showEditModal, setShowEditModal] = useState(false)
-  const handleSaveSession = (updatedSession: Session) => {
-    console.log(updatedSession)
+  const handleSaveSession = async (updatedSession: UpdateSessionDTO) => {
+    await updateSession(updatedSession)
     setShowEditModal(false)
   }
 
-  const [selectedSolve, setSelectedSolve] = useState<Solve | undefined>(undefined)
-  const handleSelectSolve = (solve: SolveItem) => {
-    const solveEntity = Solve.from({
-      id: crypto.randomUUID(),
-      sessionId: crypto.randomUUID(),
-      time: solve.time,
-      penalty: 'none',
-      scramble: "D' R2 D B2 R2 D L2 F2 L2 U2 L' U' B' F L U L' R' D F'",
-      puzzle: session.puzzle,
-      comment: undefined,
-      createdAt: new Date(),
-    })
+  const handleSelectSolve = (solve: SolveDTO) => {
+    setSelectedSolve(solve)
+  }
+  const handleUpdateSolve = async (updatedSolve: UpdateSolveDTO) => {
+    updateSolve(updatedSolve)
+  }
+  const handleDeleteSolve = async (id: string) => {
+    await deleteSolve(id)
+  }
 
-    setSelectedSolve(solveEntity)
+  if (loading) {
+    return (
+      <main className="flex h-full w-full items-center justify-center bg-background text-secondary">Loading...</main>
+    )
   }
-  const handleUpdateSolve = (updatedSolve: Solve) => {
-    console.log('update solve', updatedSolve)
-  }
-  const handleDeleteSolve = (solve: Solve) => {
-    console.log('delete solve', solve.id)
-    setSelectedSolve(undefined)
+
+  // TODO:
+  if (!session) {
+    return (
+      <main className="flex h-full w-full flex-col items-center justify-center gap-3 bg-background text-secondary">
+        <p>Session not found</p>
+
+        <button type="button" onClick={() => navigate('/sessions')} className="text-sm hover:text-primary">
+          Back to sessions
+        </button>
+      </main>
+    )
   }
 
   return (
@@ -150,7 +120,7 @@ function SessionPage() {
               <SessionModal
                 open={showEditModal}
                 mode="edit"
-                session={Session.from({ ...session, position: 0 })}
+                session={session}
                 onClose={() => setShowEditModal(false)}
                 onSubmit={handleSaveSession}
               />
@@ -163,7 +133,6 @@ function SessionPage() {
           </div>
         </header>
 
-        {/* Session stats */}
         <section className="mb-6 grid grid-cols-4 gap-2">
           <div className="rounded-md border col-span-4 sm:col-span-2 border-divider bg-background px-4 py-3">
             <div className="grid grid-cols-3">
@@ -173,18 +142,18 @@ function SessionPage() {
               </div>
               <div className="text-center">
                 <p className="text-secondary text-xs">single</p>
-                <p className="text-2xl">{formatTime(sessionStats.best.single.value)}</p>
-                <p className="text-secondary text-xs">{formatDate(sessionStats.best.single.date)}</p>
+                <p className="text-2xl">{formatTime(session.stats?.best?.value)}</p>
+                <p className="text-secondary text-xs">{formatDate(session.stats?.best?.completedAt)}</p>
               </div>
               <div className="text-center">
                 <p className="text-secondary text-xs">ao5</p>
-                <p className="text-2xl">{formatTime(sessionStats.best.ao5.value)}</p>
-                <p className="text-secondary text-xs">{formatDate(sessionStats.best.ao5.date)}</p>
+                <p className="text-2xl">{formatTimeAverage(session.stats?.bestAo5)}</p>
+                <p className="text-secondary text-xs">{formatDateAverage(session.stats?.bestAo5)}</p>
               </div>
               <div className="text-center">
                 <p className="text-secondary text-xs">ao12</p>
-                <p className="text-2xl">{formatTime(sessionStats.best.ao12.value)}</p>
-                <p className="text-secondary text-xs">{formatDate(sessionStats.best.ao12.date)}</p>
+                <p className="text-2xl">{formatTimeAverage(session.stats?.bestAo12)}</p>
+                <p className="text-secondary text-xs">{formatDateAverage(session.stats?.bestAo12)}</p>
               </div>
             </div>
           </div>
@@ -196,11 +165,13 @@ function SessionPage() {
               </div>
               <div className="col-span-1 text-center">
                 <p className="text-secondary text-xs">solves</p>
-                <p className="text-2xl">{`${sessionStats.solves.completed}/${sessionStats.solves.total}`}</p>
+                <p className="text-2xl">
+                  {`${session.stats?.solves.completed ?? 0}/${session.stats?.solves.total ?? 0}`}
+                </p>
               </div>
               <div className="col-span-1 text-center">
                 <p className="text-secondary text-xs">mean</p>
-                <p className="text-2xl">{formatTime(sessionStats.mean)}</p>
+                <p className="text-2xl">{session.stats?.mean ? formatTime(session.stats?.mean) : '--'}</p>
               </div>
             </div>
           </div>
@@ -212,11 +183,11 @@ function SessionPage() {
               </div>
               <div className="col-span-1 text-center">
                 <p className="text-secondary text-xs">+2</p>
-                <p className="text-2xl">{sessionStats.penalties.plus2}</p>
+                <p className="text-2xl">{session.stats?.solves.plusTwo ? session.stats?.solves.plusTwo : '0'}</p>
               </div>
               <div className="col-span-1 text-center">
                 <p className="text-secondary text-xs">DNF</p>
-                <p className="text-2xl">{sessionStats.penalties.dnf}</p>
+                <p className="text-2xl">{session.stats?.solves.dnf ? session.stats?.solves.dnf : '0'}</p>
               </div>
             </div>
           </div>
@@ -235,18 +206,18 @@ function SessionPage() {
             {solves.length === 0 && (
               <div className="text-center text-secondary text-sm mt-5">There are no solves in this session</div>
             )}
-            {solves.map((solve) => (
+            {solves.map((solve, index) => (
               <div
                 key={solve.id}
                 onClick={() => handleSelectSolve(solve)}
                 className="grid grid-cols-[40px_70px_70px_70px_minmax(0,1fr)_130px] items-center gap-2 border-b border-divider/50 px-2 py-1.5 text-xs transition-colors hover:bg-button-full-hover hover:cursor-pointer"
               >
-                <span className="text-secondary text-center">{solve.index}</span>
+                <span className="text-secondary text-center">{solves.length - index}</span>
                 <span className="text-center">{formatTime(solve.time)}</span>
-                <span className="text-center">{formatTime(solve.ao5)}</span>
-                <span className="text-center">{formatTime(solve.ao12)}</span>
+                <span className="text-center">{formatTimeAverage(solve.stats?.ao5)}</span>
+                <span className="text-center">{formatTimeAverage(solve.stats?.ao12)}</span>
                 <span className="truncate text-secondary">{solve.scramble}</span>
-                <span className="text-secondary text-center">{formatDateTime(solve.date)}</span>
+                <span className="text-secondary text-center">{formatDateTime(solve.createdAt)}</span>
               </div>
             ))}
           </div>

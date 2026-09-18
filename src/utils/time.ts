@@ -1,3 +1,4 @@
+import { AverageResultDTO } from '../types/dtos/statistics'
 import { SolvePenalty } from '../types/solve'
 
 export function formatTime(
@@ -25,5 +26,17 @@ export function formatTime(
       return `${result}+`
     case 'DNF':
       return format === 'compact' ? 'DNF' : `DNF(${result})`
+  }
+}
+
+export function formatTimeAverage(time?: AverageResultDTO): string {
+  if (!time) return '-'
+  switch (time.status) {
+    case 'unavailable':
+      return '-'
+    case 'DNF':
+      return 'DNF'
+    case 'value':
+      return formatTime(time.value)
   }
 }

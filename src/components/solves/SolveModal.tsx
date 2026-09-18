@@ -2,17 +2,17 @@ import { useEffect, useState } from 'react'
 import { Trash2 } from 'lucide-react'
 import Modal from '../common/Modal'
 import PuzzleRenderer from '../puzzle/PuzzleRenderer'
-import type { Solve } from '../../domain/solve'
 import { formatTime } from '../../utils/time'
 import { formatDateTime } from '../../utils/date'
 import { SolvePenalty } from '../../types/solve'
+import { SolveDTO, UpdateSolveDTO } from '../../types/dtos/solve'
 
 interface SolveModalProps {
   open: boolean
-  solve: Solve
+  solve: SolveDTO
   onClose: () => void
-  onDelete: (solve: Solve) => void
-  onUpdate?: (solve: Solve) => void
+  onDelete: (id: string) => void
+  onUpdate?: (solve: UpdateSolveDTO) => void
 }
 
 function SolveModal({ open, solve, onClose, onDelete, onUpdate }: SolveModalProps) {
@@ -67,7 +67,7 @@ function SolveModal({ open, solve, onClose, onDelete, onUpdate }: SolveModalProp
             </button>
             <button
               type="button"
-              onClick={() => onDelete(solve)}
+              onClick={() => onDelete(solve.id)}
               className="cursor-pointer px-3 py-2 text-sm text-secondary transition-colors hover:text-red-400"
             >
               <Trash2 size={12} />
