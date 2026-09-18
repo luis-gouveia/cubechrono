@@ -5,7 +5,7 @@ import { Solve } from '../../domain/solve'
 import SolveModal from '../solves/SolveModal'
 
 function SolveTable({ solves }: { solves: SolveItem[] }) {
-  const [selectedSolve, setSelectedSolve] = useState<Solve | null>(null)
+  const [selectedSolve, setSelectedSolve] = useState<Solve | undefined>(undefined)
 
   const handleSelectSolve = (solve: SolveItem) => {
     const solveEntity = Solve.from({
@@ -51,7 +51,7 @@ function SolveTable({ solves }: { solves: SolveItem[] }) {
         <SolveModal
           open
           solve={selectedSolve}
-          onClose={() => setSelectedSolve(null)}
+          onClose={() => setSelectedSolve(undefined)}
           onUpdate={() => {}}
           onDelete={() => {}}
         />

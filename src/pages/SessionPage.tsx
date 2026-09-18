@@ -77,7 +77,7 @@ function SessionPage() {
     setShowEditModal(false)
   }
 
-  const [selectedSolve, setSelectedSolve] = useState<Solve | null>(null)
+  const [selectedSolve, setSelectedSolve] = useState<Solve | undefined>(undefined)
   const handleSelectSolve = (solve: SolveItem) => {
     const solveEntity = Solve.from({
       id: crypto.randomUUID(),
@@ -97,7 +97,7 @@ function SessionPage() {
   }
   const handleDeleteSolve = (solve: Solve) => {
     console.log('delete solve', solve.id)
-    setSelectedSolve(null)
+    setSelectedSolve(undefined)
   }
 
   return (
@@ -254,7 +254,7 @@ function SessionPage() {
             <SolveModal
               open
               solve={selectedSolve}
-              onClose={() => setSelectedSolve(null)}
+              onClose={() => setSelectedSolve(undefined)}
               onUpdate={handleUpdateSolve}
               onDelete={handleDeleteSolve}
             />

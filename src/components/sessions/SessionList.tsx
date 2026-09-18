@@ -13,14 +13,14 @@ interface SessionListProps {
 }
 
 function SessionList({ sessions, onReorder, onEdit, onDelete, onOpen }: SessionListProps) {
-  const [activeId, setActiveId] = useState<string | null>(null)
+  const [activeId, setActiveId] = useState<string | undefined>(undefined)
   const activeSession = sessions.find((session) => session.id === activeId)
 
   const handleDragStart = (event: DragStartEvent) => setActiveId(String(event.active.id))
-  const handleDragCancel = () => setActiveId(null)
+  const handleDragCancel = () => setActiveId(undefined)
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event
-    setActiveId(null)
+    setActiveId(undefined)
     if (!over || active.id === over.id) return
     const oldIndex = sessions.findIndex((session) => session.id === active.id)
     const newIndex = sessions.findIndex((session) => session.id === over.id)
@@ -43,10 +43,10 @@ function SessionList({ sessions, onReorder, onEdit, onDelete, onOpen }: SessionL
           ))}
         </div>
       </SortableContext>
-      <DragOverlay dropAnimation={null}>
+      <DragOverlay dropAnimation={undefined}>
         {activeSession ? (
           <SessionListItem session={activeSession} onEdit={() => {}} onDelete={() => {}} onOpen={() => {}} />
-        ) : null}
+        ) : undefined}
       </DragOverlay>
     </DndContext>
   )

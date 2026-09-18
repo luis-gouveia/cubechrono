@@ -13,8 +13,8 @@ function SessionsPage() {
   const { sessions, loading, createSession, updateSession, deleteSession, clearSession } = useSessions()
 
   const [showCreateModal, setShowCreateModal] = useState(false)
-  const [editingSession, setEditingSession] = useState<SessionDTO | null>(null)
-  const [deletingSession, setDeletingSession] = useState<SessionDTO | null>(null)
+  const [editingSession, setEditingSession] = useState<SessionDTO | undefined>(undefined)
+  const [deletingSession, setDeletingSession] = useState<SessionDTO | undefined>(undefined)
 
   const handleOpen = (session: SessionDTO) => {
     navigate(`/sessions/${session.id}`)
@@ -36,7 +36,7 @@ function SessionsPage() {
   }
   const handleEditSubmit = async (session: UpdateSessionDTO) => {
     await updateSession(session)
-    setEditingSession(null)
+    setEditingSession(undefined)
   }
   const handleDeleteAction = async (action: DeleteSessionAction) => {
     switch (action) {
@@ -47,7 +47,7 @@ function SessionsPage() {
         await clearSession(deletingSession!.id)
         break
     }
-    setDeletingSession(null)
+    setDeletingSession(undefined)
   }
 
   if (loading) {
@@ -101,12 +101,12 @@ function SessionsPage() {
           open
           mode="edit"
           session={editingSession}
-          onClose={() => setEditingSession(null)}
+          onClose={() => setEditingSession(undefined)}
           onSubmit={handleEditSubmit}
         />
       )}
       {deletingSession && (
-        <DeleteSessionModal open onClose={() => setDeletingSession(null)} onConfirm={handleDeleteAction} />
+        <DeleteSessionModal open onClose={() => setDeletingSession(undefined)} onConfirm={handleDeleteAction} />
       )}
     </main>
   )

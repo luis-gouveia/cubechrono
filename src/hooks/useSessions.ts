@@ -4,11 +4,11 @@ import { CreateSessionDTO, SessionDTO, UpdateSessionDTO } from '../types/dtos/se
 export function useSessions() {
   const [sessions, setSessions] = useState<SessionDTO[]>([])
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<Error | null>(null)
+  const [error, setError] = useState<Error | undefined>(undefined)
 
   const loadSessions = useCallback(async () => {
     setLoading(true)
-    setError(null)
+    setError(undefined)
     try {
       const result = await window.api.sessions.list()
       setSessions(result)
@@ -20,7 +20,7 @@ export function useSessions() {
   }, [])
 
   const createSession = useCallback(async (input: CreateSessionDTO) => {
-    setError(null)
+    setError(undefined)
     try {
       const session = await window.api.sessions.create(input)
       setSessions((current) => [...current, session])
@@ -34,7 +34,7 @@ export function useSessions() {
 
   const updateSession = useCallback(
     async (input: UpdateSessionDTO) => {
-      setError(null)
+      setError(undefined)
       try {
         const updatedSession = await window.api.sessions.update(input)
         await loadSessions()
@@ -50,7 +50,7 @@ export function useSessions() {
 
   const deleteSession = useCallback(
     async (id: string) => {
-      setError(null)
+      setError(undefined)
       try {
         await window.api.sessions.delete(id)
         await loadSessions()
@@ -65,7 +65,7 @@ export function useSessions() {
 
   const clearSession = useCallback(
     async (id: string) => {
-      setError(null)
+      setError(undefined)
       try {
         await window.api.sessions.clear(id)
         await loadSessions()
@@ -86,7 +86,7 @@ export function useSessions() {
     sessions,
     loading,
     error,
-    loadSessions,
+    reloadSessions: loadSessions,
     createSession,
     updateSession,
     deleteSession,
