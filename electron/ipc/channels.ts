@@ -12,4 +12,7 @@ export const IPC_CHANNELS = {
     update: 'solves:update',
     delete: 'solves:delete',
   },
+  stats: {
+    getByPuzzle: 'stats:puzzle',
+  },
 } as const

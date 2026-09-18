@@ -23,3 +23,5 @@ export interface SolveStatsDTO {
   ao5: AverageResultDTO
   ao12: AverageResultDTO
 }
+
+export type PuzzleStatsDTO = SessionStatsDTO

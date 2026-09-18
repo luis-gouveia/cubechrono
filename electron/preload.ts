@@ -16,6 +16,9 @@ const api: ElectronApi = {
     update: (input) => ipcRenderer.invoke(IPC_CHANNELS.solves.update, input),
     delete: (id) => ipcRenderer.invoke(IPC_CHANNELS.solves.delete, id),
   },
+  stats: {
+    getByPuzzle: (puzzle) => ipcRenderer.invoke(IPC_CHANNELS.stats.getByPuzzle, puzzle),
+  },
 }
 
 contextBridge.exposeInMainWorld('api', api)

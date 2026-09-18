@@ -41,6 +41,9 @@ const migrations: Migration[] = [
 
         CREATE INDEX idx_solves_created_at
           ON solves(created_at);
+
+        CREATE INDEX IF NOT EXISTS idx_solves_puzzle
+          ON solves(puzzle);
       `)
     },
   },

@@ -44,7 +44,7 @@ function PuzzleStatsModal({ open, puzzle, stats, onClose }: PuzzleStatsModalProp
           <div className="rounded-md border col-span-1 border-divider bg-background px-4 py-3">
             <div className="grid grid-cols-2">
               <div className="col-span-2 flex justify-center items-center mb-3">
-                <Clock4 size={15} className="text-blue-400 mx-2" />
+                <Clock4 size={15} className="text-blue-400 mr-2" />
                 <p>Mean</p>
               </div>
               <div className="col-span-2 text-center">

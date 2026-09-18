@@ -2,6 +2,7 @@ import type Database from 'better-sqlite3'
 import { Solve } from '../../../src/domain/solve'
 import { SolveModel } from './models/solve'
 import { SolveMapper } from '../mappers/solveMapper'
+import { Puzzle } from '../../../src/domain/puzzle'
 
 export class SolveRepo {
   private readonly db: Database.Database
@@ -49,5 +50,12 @@ export class SolveRepo {
 
   public delete(id: string): void {
     this.db.prepare(`DELETE FROM solves WHERE id = ?`).run(id)
+  }
+
+  public getByPuzzle(puzzle: Puzzle): Solve[] {
+    const rows = this.db
+      .prepare(`SELECT * FROM solves WHERE puzzle = ? ORDER BY created_at ASC`)
+      .all(puzzle) as SolveModel[]
+    return rows.map(this.solveMapper.toDomain)
   }
 }

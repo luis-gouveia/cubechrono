@@ -3,6 +3,8 @@ import { SolveRepo } from '../repos/solveRepo'
 import { CreateSolveDTO, SolveDTO, UpdateSolveDTO } from '../../../src/types/dtos/solve'
 import { SolveMapper } from '../mappers/solveMapper'
 import { StatisticsCalculator } from '../statistics/statisticsCalculator'
+import { Puzzle } from '../../../src/domain/puzzle'
+import { PuzzleStatsDTO } from '../../../src/types/dtos/statistics'
 
 export class SolveService {
   private readonly solveRepo: SolveRepo
@@ -45,5 +47,10 @@ export class SolveService {
 
   public delete(id: string): void {
     this.solveRepo.delete(id)
+  }
+
+  public getPuzzleStats(puzzle: Puzzle): PuzzleStatsDTO {
+    const solves = this.solveRepo.getByPuzzle(puzzle)
+    return this.statisticsCalculator.calculateSessionStats(solves)
   }
 }
