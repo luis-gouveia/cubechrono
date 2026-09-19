@@ -26,8 +26,6 @@ function SessionSummary({ puzzle, stats }: SessionSummaryProps) {
         bestAo12: { status: 'unavailable' },
       }
 
-  console.log(stats)
-
   return (
     <>
       <div className="flex items-center gap-4 border-b border-divider p-4">
