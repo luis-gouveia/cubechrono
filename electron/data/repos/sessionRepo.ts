@@ -40,7 +40,29 @@ export class SessionRepo {
     }
   }
 
-  public delete(id: string): void {
-    this.db.prepare(`DELETE FROM sessions WHERE id = ?`).run(id)
+  public delete(session: Session): void {
+    const deleteSession = this.db.transaction(() => {
+      this.db.prepare(`DELETE FROM sessions WHERE id = ?`).run(session.id)
+      this.db.prepare(`UPDATE sessions SET position = position - 1 WHERE position > ?`).run(session.position)
+    })
+    deleteSession()
+  }
+
+  public move(session: Session, newPosition: number): void {
+    const moveSession = this.db.transaction(() => {
+      const oldPosition = session.position
+      if (oldPosition === newPosition) return
+      if (newPosition < oldPosition) {
+        this.db
+          .prepare(`UPDATE sessions SET position = position + 1 WHERE position >= ? AND position < ?`)
+          .run(newPosition, oldPosition)
+      } else {
+        this.db
+          .prepare(`UPDATE sessions SET position = position - 1 WHERE position > ? AND position <= ?`)
+          .run(oldPosition, newPosition)
+      }
+      this.db.prepare(`UPDATE sessions SET position = ? WHERE id = ?`).run(newPosition, session.id)
+    })
+    moveSession()
   }
 }

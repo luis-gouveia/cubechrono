@@ -44,17 +44,16 @@ export class SessionService {
   }
 
   public update(input: UpdateSessionDTO): SessionDTO {
-    const { id, ...updatedFields } = input
+    const { id, position, ...updatedFields } = input
     const session = this.sessionRepo.getById(id)
     if (!session) throw new Error('Session not found!')
 
-    if (updatedFields.position !== undefined && updatedFields.position !== session.position) {
-      const sessions = this.sessionRepo.getAll()
-      this.reorderSessions(session, sessions)
-    }
-
     session.update(updatedFields)
     this.sessionRepo.save(session)
+
+    if (position !== undefined && position !== session.position) {
+      this.sessionRepo.move(session, position)
+    }
     return this.sessionMapper.toDTO(session)
   }
 
@@ -65,24 +64,13 @@ export class SessionService {
     const sessions = this.sessionRepo.getAll()
     if (sessions.length === 1) throw new Error('You have to have at least one session!')
 
-    this.sessionRepo.delete(id)
-    this.reorderSessions(session, sessions)
+    this.sessionRepo.delete(session)
   }
 
   public clear(id: string): void {
     const session = this.sessionRepo.getById(id)
     if (!session) throw new Error('Session not found!')
     this.solveRepo.deleteBySessionId(id)
-  }
-
-  private reorderSessions(session: Session, sessions: Session[]): void {
-    const sessionsToReorder = sessions.filter((s) => s.id !== session.id)
-    sessionsToReorder.forEach((sessionToReorder, index) => {
-      if (sessionToReorder.position !== index) {
-        sessionToReorder.update({ position: index })
-        this.sessionRepo.save(sessionToReorder)
-      }
-    })
   }
 
   private getStats(sessionId: string) {
