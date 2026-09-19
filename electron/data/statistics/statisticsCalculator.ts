@@ -5,7 +5,7 @@ export class StatisticsCalculator {
   public calculateSessionStats(solves: Solve[]): SessionStatsDTO {
     const validSolves = solves.filter((solve) => solve.effectiveTime !== undefined)
     const solveStats = this.calculateSolveStats(solves)
-    const lastSolveStats = solveStats[solveStats.length - 1]
+    const lastSolveStats = solveStats[0]
 
     return {
       solves: {
@@ -15,6 +15,7 @@ export class StatisticsCalculator {
         dnf: solves.filter((solve) => solve.penalty === 'DNF').length,
       },
       mean: this.calculateMean(validSolves),
+      current: solves[0]?.effectiveTime,
       best: this.calculateBestSolve(validSolves),
       ao5: lastSolveStats?.stats.ao5 ?? { status: 'unavailable' },
       ao12: lastSolveStats?.stats.ao12 ?? { status: 'unavailable' },
@@ -24,13 +25,15 @@ export class StatisticsCalculator {
   }
 
   public calculateSolveStats(solves: Solve[]): { solve: Solve; stats: SolveStatsDTO }[] {
-    return solves.map((solve, index) => ({
+    const chronologicalSolves = [...solves].reverse()
+    const chronologicalStats = chronologicalSolves.map((solve, index) => ({
       solve,
       stats: {
-        ao5: this.calculateAverage(solves, index, 5),
-        ao12: this.calculateAverage(solves, index, 12),
+        ao5: this.calculateAverage(chronologicalSolves, index, 5),
+        ao12: this.calculateAverage(chronologicalSolves, index, 12),
       },
     }))
+    return chronologicalStats.reverse()
   }
 
   private calculateMean(solves: Solve[]): number | undefined {

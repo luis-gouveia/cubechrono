@@ -1,12 +1,18 @@
 import { useCallback, useEffect, useState } from 'react'
 import { CreateSolveDTO, SolveDTO, UpdateSolveDTO } from '../types/dtos/solve'
 
-export function useSolves(sessionId: string) {
+export function useSolves(sessionId: string | undefined) {
   const [solves, setSolves] = useState<SolveDTO[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<Error | undefined>(undefined)
 
   const loadSolves = useCallback(async () => {
+    if (!sessionId) {
+      setSolves([])
+      setLoading(false)
+      return
+    }
+
     setLoading(true)
     setError(undefined)
     try {
@@ -19,18 +25,21 @@ export function useSolves(sessionId: string) {
     }
   }, [sessionId])
 
-  const createSolve = useCallback(async (input: CreateSolveDTO) => {
-    setError(undefined)
-    try {
-      const solve = await window.api.solves.create(input)
-      setSolves((current) => [...current, solve])
-      return solve
-    } catch (error) {
-      const normalizedError = error instanceof Error ? error : new Error('Failed to create solve')
-      setError(normalizedError)
-      throw normalizedError
-    }
-  }, [])
+  const createSolve = useCallback(
+    async (input: CreateSolveDTO) => {
+      setError(undefined)
+      try {
+        const solve = await window.api.solves.create(input)
+        await loadSolves()
+        return solve
+      } catch (error) {
+        const normalizedError = error instanceof Error ? error : new Error('Failed to create solve')
+        setError(normalizedError)
+        throw normalizedError
+      }
+    },
+    [loadSolves],
+  )
 
   const updateSolve = useCallback(
     async (input: UpdateSolveDTO) => {

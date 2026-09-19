@@ -4,6 +4,7 @@ import { CreateSessionDTO, SessionDTO, UpdateSessionDTO } from '../../../src/typ
 import { SessionMapper } from '../mappers/sessionMapper'
 import { StatisticsCalculator } from '../statistics/statisticsCalculator'
 import { SolveRepo } from '../repos/solveRepo'
+import { SessionStatsDTO } from '../../../src/types/dtos/statistics'
 
 export class SessionService {
   private readonly sessionRepo: SessionRepo
@@ -73,7 +74,7 @@ export class SessionService {
     this.solveRepo.deleteBySessionId(id)
   }
 
-  private getStats(sessionId: string) {
+  private getStats(sessionId: string): SessionStatsDTO {
     const solves = this.solveRepo.getBySessionId(sessionId)
     return this.statisticsCalculator.calculateSessionStats(solves)
   }

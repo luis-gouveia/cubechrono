@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useScramble } from '../hooks/useScramble'
 import PuzzleRenderer from '../components/puzzle/PuzzleRenderer'
 import Dropdown from '../components/common/Dropdown'
@@ -8,31 +8,77 @@ import Timer, { TimerState } from '../components/timer/Timer'
 import { Copy, RefreshCw, Check } from 'lucide-react'
 import { useSettings } from '../hooks/useSettings'
 import { useSessions } from '../hooks/useSessions'
-
-interface TimerSolve {
-  id: string
-  time: number
-  scramble: string
-}
+import { useSolves } from '../hooks/useSolves'
+import { UpdateSolveDTO } from '../types/dtos/solve'
 
 function TimerPage() {
   const { settings } = useSettings()
 
-  // TODO: use puzzle from session
-  const [puzzle, setPuzzle] = useState<Puzzle>(PUZZLE.THREE_BY_THREE)
-  const [session, setSession] = useState('1')
-  const [times, setTimes] = useState<TimerSolve[]>([])
-  const [copied, setCopied] = useState(false)
+  const [activeSessionId, setActiveSessionId] = useState<string | undefined>(undefined)
+  const { sessions, loading: sessionsLoading, updateSession, reloadSessions } = useSessions()
+  const activeSession = sessions.find((session) => session.id === activeSessionId)
 
+  useEffect(() => {
+    if (activeSessionId !== undefined) return
+    if (sessions.length === 0) return
+    setActiveSessionId(sessions[0].id)
+  }, [sessions, activeSessionId])
+
+  const { solves, createSolve, updateSolve, deleteSolve } = useSolves(activeSession?.id)
+  const [copied, setCopied] = useState(false)
+  const [timerState, setTimerState] = useState<TimerState>('idle')
+
+  const puzzle = activeSession?.puzzle ?? PUZZLE.THREE_BY_THREE
   const { scramble, generateScramble } = useScramble(puzzle)
 
-  const [timerState, setTimerState] = useState<TimerState>('idle')
   const isFocusActive = settings.focusMode && timerState !== 'idle'
+  const loading = sessionsLoading && sessions.length === 0
+  // TODO:
+  if (loading) {
+    return <div className="flex h-full w-full items-center justify-center bg-background text-secondary">Loading...</div>
+  }
+  if (!activeSession) {
+    return (
+      <div className="flex h-full w-full items-center justify-center bg-background text-secondary">
+        No active session
+      </div>
+    )
+  }
 
-  // ===============================
-  const aa = useSessions()
-  console.log(aa.sessions)
-  // ===============================
+  const handleSessionChange = (sessionId: string) => {
+    if (sessionId === activeSession.id) return
+    setActiveSessionId(sessionId)
+  }
+  const handlePuzzleChange = async (puzzle: Puzzle) => {
+    if (puzzle === activeSession.puzzle) return
+    await updateSession({
+      id: activeSession.id,
+      name: activeSession.name,
+      description: activeSession.description,
+      puzzle,
+    })
+  }
+
+  const handleSolve = async (time: number, penalty: 'none' | '+2' | 'DNF') => {
+    if (!scramble) return
+    await createSolve({
+      sessionId: activeSession.id,
+      time,
+      penalty,
+      scramble,
+      puzzle: activeSession.puzzle,
+    })
+    await reloadSessions()
+    generateScramble()
+  }
+  const handleSolveUpdate = async (input: UpdateSolveDTO) => {
+    await updateSolve(input)
+    await reloadSessions()
+  }
+  const handleSolveDelete = async (id: string) => {
+    await deleteSolve(id)
+    await reloadSessions()
+  }
 
   const copyScramble = async () => {
     if (!scramble) return
@@ -43,30 +89,15 @@ function TimerPage() {
     }, 1000)
   }
 
-  const handleSolve = (time: number, penalty: 'none' | '+2' | 'DNF') => {
-    if (!scramble) return
-
-    // TODO: Apply penalty to stored solve.
-    const solve: TimerSolve = {
-      id: crypto.randomUUID(),
-      time,
-      scramble,
-    }
-
-    setTimes((previous) => [solve, ...previous])
-    generateScramble()
-  }
-
   const puzzleOptions = Object.entries(PUZZLES).map(([, puzzle]) => ({
     value: puzzle.id,
     label: puzzle.label,
   }))
 
-  const sessionOptions = [
-    { value: '1', label: 'My session 1' },
-    { value: '2', label: 'My session 2' },
-    { value: '3', label: 'My session 3' },
-  ]
+  const sessionOptions = sessions.map((session) => ({
+    value: session.id,
+    label: session.name,
+  }))
 
   return (
     <div className="relative h-full w-full overflow-hidden">
@@ -74,43 +105,10 @@ function TimerPage() {
         <div className="fixed left-15.25 top-0 h-screen">
           <TimerSidePanel
             puzzle={puzzle}
-            stats={{
-              solves: {
-                completed: times.length,
-                total: times.length,
-              },
-              mean: 0,
-              current: {
-                single: times[0]?.time ?? 0,
-                ao5: 0,
-                ao12: 0,
-              },
-              best: {
-                single: {
-                  value: 0,
-                  date: new Date(),
-                },
-                ao5: {
-                  value: 0,
-                  date: new Date(),
-                },
-                ao12: {
-                  value: 0,
-                  date: new Date(),
-                },
-              },
-              penalties: {
-                plus2: 0,
-                dnf: 0,
-              },
-            }}
-            solves={times.map((solve, index) => ({
-              id: solve.id,
-              index: times.length - index,
-              time: solve.time,
-              ao5: 0,
-              ao12: 0,
-            }))}
+            stats={activeSession.stats}
+            solves={solves}
+            onUpdate={handleSolveUpdate}
+            onDelete={handleSolveDelete}
           />
         </div>
       )}
@@ -123,8 +121,20 @@ function TimerPage() {
         <div className="flex flex-col items-center">
           {!isFocusActive && (
             <div className="flex w-full items-center justify-center gap-2 pt-2">
-              <Dropdown value={session} options={sessionOptions} onChange={setSession} align="center" width="w-60" />
-              <Dropdown value={puzzle} options={puzzleOptions} onChange={setPuzzle} align="center" width="w-35" />
+              <Dropdown
+                value={activeSessionId ?? ''}
+                options={sessionOptions}
+                onChange={handleSessionChange}
+                align="center"
+                width="w-60"
+              />
+              <Dropdown
+                value={puzzle}
+                options={puzzleOptions}
+                onChange={handlePuzzleChange}
+                align="center"
+                width="w-35"
+              />
             </div>
           )}
           {!isFocusActive && (

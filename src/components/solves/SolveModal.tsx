@@ -25,14 +25,23 @@ function SolveModal({ open, solve, onClose, onDelete, onUpdate }: SolveModalProp
     setComment(solve.comment ?? '')
   }, [open, solve])
 
+  const updateSolve = (changes: Partial<UpdateSolveDTO>) => {
+    onUpdate?.({
+      id: solve.id,
+      penalty,
+      comment,
+      ...changes,
+    })
+  }
+
   const handlePenaltyChange = (newPenalty: Omit<SolvePenalty, 'none'>) => {
-    if (newPenalty === '+2') {
-      if (penalty === '+2') setPenalty('none')
-      else setPenalty('+2')
-    } else {
-      if (penalty === 'DNF') setPenalty('none')
-      else setPenalty('DNF')
-    }
+    const nextPenalty = (penalty === newPenalty ? 'none' : newPenalty) as SolvePenalty
+
+    setPenalty(nextPenalty)
+
+    updateSolve({
+      penalty: nextPenalty,
+    })
   }
 
   const handleCommentChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -40,7 +49,7 @@ function SolveModal({ open, solve, onClose, onDelete, onUpdate }: SolveModalProp
   }
 
   const handleCommentBlur = () => {
-    onUpdate?.(solve)
+    updateSolve({ comment })
   }
 
   return (

@@ -1,13 +1,34 @@
 import { useState } from 'react'
 import { formatTime, formatTimeAverage } from '../../utils/time'
 import SolveModal from '../solves/SolveModal'
-import { SolveDTO } from '../../types/dtos/solve'
+import { SolveDTO, UpdateSolveDTO } from '../../types/dtos/solve'
 
-function SolveTable({ solves }: { solves: SolveDTO[] }) {
-  const [selectedSolve, setSelectedSolve] = useState<SolveDTO | undefined>(undefined)
+interface SolveTableProps {
+  solves: SolveDTO[]
+  onUpdate: (solve: UpdateSolveDTO) => Promise<void>
+  onDelete: (id: string) => Promise<void>
+}
+
+function SolveTable({ solves, onUpdate, onDelete }: SolveTableProps) {
+  const [selectedSolveId, setSelectedSolveId] = useState<string | undefined>(undefined)
+
+  const selectedSolve = solves.find((solve) => solve.id === selectedSolveId)
 
   const handleSelectSolve = (solve: SolveDTO) => {
-    setSelectedSolve(solve)
+    setSelectedSolveId(solve.id)
+  }
+
+  const handleClose = () => {
+    setSelectedSolveId(undefined)
+  }
+
+  const handleUpdate = async (input: UpdateSolveDTO) => {
+    await onUpdate(input)
+  }
+
+  const handleDelete = async (id: string) => {
+    await onDelete(id)
+    setSelectedSolveId(undefined)
   }
 
   return (
@@ -29,20 +50,14 @@ function SolveTable({ solves }: { solves: SolveDTO[] }) {
             className="grid grid-cols-4 px-1 py-1 text-primary text-sm text-center transition-all hover:bg-button-full-hover hover:cursor-pointer"
           >
             <div>{solves.length - index}</div>
-            <div>{formatTime(solve.time)}</div>
+            <div>{formatTime(solve.time, solve.penalty)}</div>
             <div>{formatTimeAverage(solve.stats?.ao5)}</div>
             <div>{formatTimeAverage(solve.stats?.ao12)}</div>
           </div>
         ))}
       </div>
       {selectedSolve && (
-        <SolveModal
-          open
-          solve={selectedSolve}
-          onClose={() => setSelectedSolve(undefined)}
-          onUpdate={() => {}}
-          onDelete={() => {}}
-        />
+        <SolveModal open solve={selectedSolve} onClose={handleClose} onUpdate={handleUpdate} onDelete={handleDelete} />
       )}
     </div>
   )

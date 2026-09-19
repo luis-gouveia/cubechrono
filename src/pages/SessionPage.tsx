@@ -18,11 +18,13 @@ function SessionPage() {
 
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [showEditModal, setShowEditModal] = useState(false)
-  const [selectedSolve, setSelectedSolve] = useState<SolveDTO | undefined>(undefined)
 
   const { session, loading: sessionLoading, updateSession, deleteSession, clearSession } = useSession(sessionId!)
   const { solves, loading: solvesLoading, updateSolve, deleteSolve } = useSolves(sessionId!)
   const loading = sessionLoading || solvesLoading
+
+  const [selectedSolveId, setSelectedSolveId] = useState<string | undefined>(undefined)
+  const selectedSolve = solves.find((solve) => solve.id === selectedSolveId)
 
   const handleDeleteAction = async (action: DeleteSessionAction) => {
     switch (action) {
@@ -42,7 +44,7 @@ function SessionPage() {
   }
 
   const handleSelectSolve = (solve: SolveDTO) => {
-    setSelectedSolve(solve)
+    setSelectedSolveId(solve.id)
   }
   const handleUpdateSolve = async (updatedSolve: UpdateSolveDTO) => {
     updateSolve(updatedSolve)
@@ -213,7 +215,7 @@ function SessionPage() {
                 className="grid grid-cols-[40px_70px_70px_70px_minmax(0,1fr)_130px] items-center gap-2 border-b border-divider/50 px-2 py-1.5 text-xs transition-colors hover:bg-button-full-hover hover:cursor-pointer"
               >
                 <span className="text-secondary text-center">{solves.length - index}</span>
-                <span className="text-center">{formatTime(solve.time)}</span>
+                <span className="text-center">{formatTime(solve.time, solve.penalty)}</span>
                 <span className="text-center">{formatTimeAverage(solve.stats?.ao5)}</span>
                 <span className="text-center">{formatTimeAverage(solve.stats?.ao12)}</span>
                 <span className="truncate text-secondary">{solve.scramble}</span>
@@ -225,7 +227,7 @@ function SessionPage() {
             <SolveModal
               open
               solve={selectedSolve}
-              onClose={() => setSelectedSolve(undefined)}
+              onClose={() => setSelectedSolveId(undefined)}
               onUpdate={handleUpdateSolve}
               onDelete={handleDeleteSolve}
             />

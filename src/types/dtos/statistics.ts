@@ -9,6 +9,7 @@ export interface SessionStatsDTO {
     dnf: number
   }
   mean: number | undefined
+  current: number | undefined
   best:
     | {
         value: number
