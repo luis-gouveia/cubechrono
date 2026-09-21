@@ -1,3 +1,4 @@
+import { SolveDTO } from '../types/dtos/solve'
 import { AverageResultDTO } from '../types/dtos/statistics'
 import { SolvePenalty } from '../types/solve'
 
@@ -39,4 +40,19 @@ export function formatTimeAverage(time?: AverageResultDTO): string {
     case 'value':
       return formatTime(time.value)
   }
+}
+
+export function getEffectiveTime(solve: SolveDTO): number | undefined {
+  if (solve.penalty === 'DNF') return undefined
+  if (solve.penalty === '+2') return solve.time + 2000
+  return solve.time
+}
+
+export function formatTimeDiff(currentSolve?: SolveDTO, previousSolve?: SolveDTO): string {
+  const currentTime = currentSolve ? getEffectiveTime(currentSolve) : undefined
+  const previousTime = previousSolve ? getEffectiveTime(previousSolve) : undefined
+  if (currentTime === undefined || previousTime === undefined) return '-'
+
+  const diff = currentTime - previousTime
+  return `${diff >= 0 ? '+' : '-'}${formatTime(Math.abs(diff))}`
 }

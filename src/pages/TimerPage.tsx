@@ -10,6 +10,7 @@ import { useSettings } from '../hooks/useSettings'
 import { useSessions } from '../hooks/useSessions'
 import { useSolves } from '../hooks/useSolves'
 import { UpdateSolveDTO } from '../types/dtos/solve'
+import { formatTimeAverage, formatTimeDiff } from '../utils/time'
 
 function TimerPage() {
   const { settings } = useSettings()
@@ -177,9 +178,9 @@ function TimerPage() {
             <>
               {settings.showCurrentStats && (
                 <div className=" my-3 flex flex-col items-center leading-5 text-secondary">
-                  <span>diff: -1.23</span>
-                  <span>ao5: 5.29</span>
-                  <span>ao12: 6.32</span>
+                  <span>diff: {formatTimeDiff(solves[0], solves[1])}</span>
+                  <span>ao5: {formatTimeAverage(activeSession.stats?.ao5)}</span>
+                  <span>ao12: {formatTimeAverage(activeSession.stats?.ao12)}</span>
                 </div>
               )}
             </>
