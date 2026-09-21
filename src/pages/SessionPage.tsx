@@ -19,7 +19,14 @@ function SessionPage() {
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [showEditModal, setShowEditModal] = useState(false)
 
-  const { session, loading: sessionLoading, updateSession, deleteSession, clearSession } = useSession(sessionId!)
+  const {
+    session,
+    loading: sessionLoading,
+    updateSession,
+    deleteSession,
+    clearSession,
+    reload,
+  } = useSession(sessionId!)
   const { solves, loading: solvesLoading, updateSolve, deleteSolve } = useSolves(sessionId!)
   const loading = sessionLoading || solvesLoading
 
@@ -43,14 +50,17 @@ function SessionPage() {
     setShowEditModal(false)
   }
 
-  const handleSelectSolve = (solve: SolveDTO) => {
+  const handleSelectSolve = async (solve: SolveDTO) => {
     setSelectedSolveId(solve.id)
+    await reload()
   }
   const handleUpdateSolve = async (updatedSolve: UpdateSolveDTO) => {
     updateSolve(updatedSolve)
+    await reload()
   }
   const handleDeleteSolve = async (id: string) => {
     await deleteSolve(id)
+    await reload()
   }
 
   if (loading) {
