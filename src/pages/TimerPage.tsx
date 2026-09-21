@@ -12,10 +12,14 @@ import { useSolves } from '../hooks/useSolves'
 import { UpdateSolveDTO } from '../types/dtos/solve'
 import { formatTimeAverage, formatTimeDiff } from '../utils/time'
 
+const ACTIVE_SESSION_KEY = 'cubechrono.activeSessionId'
+
 function TimerPage() {
   const { settings } = useSettings()
 
-  const [activeSessionId, setActiveSessionId] = useState<string | undefined>(undefined)
+  const [activeSessionId, setActiveSessionId] = useState<string | undefined>(
+    () => localStorage.getItem(ACTIVE_SESSION_KEY) ?? undefined,
+  )
   const { sessions, loading: sessionsLoading, updateSession, reloadSessions } = useSessions()
   const activeSession = sessions.find((session) => session.id === activeSessionId)
 
@@ -24,6 +28,11 @@ function TimerPage() {
     if (sessions.length === 0) return
     setActiveSessionId(sessions[0].id)
   }, [sessions, activeSessionId])
+
+  useEffect(() => {
+    if (!activeSessionId) return
+    localStorage.setItem(ACTIVE_SESSION_KEY, activeSessionId)
+  }, [activeSessionId])
 
   const { solves, createSolve, updateSolve, deleteSolve } = useSolves(activeSession?.id)
   const [copied, setCopied] = useState(false)
