@@ -1,13 +1,18 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { PUZZLES, type Puzzle } from '../domain/puzzle'
 import { formatTime } from '../utils/time'
 import PuzzleStatsModal from '../components/stats/PuzzleStatsModal'
 import { useStats } from '../hooks/useStats'
+import { toast } from 'sonner'
 
 function StatsPage() {
   const [selectedPuzzle, setSelectedPuzzle] = useState<Puzzle | undefined>(undefined)
 
-  const { stats, loading } = useStats()
+  const { stats, loading, error } = useStats()
+  useEffect(() => {
+    if (!error) return
+    toast.error(error.message)
+  }, [error])
 
   return (
     <main className="h-full w-full overflow-y-auto bg-background text-primary scrollbar-hidden">

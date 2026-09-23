@@ -11,6 +11,7 @@ import { useSessions } from '../hooks/useSessions'
 import { useSolves } from '../hooks/useSolves'
 import { UpdateSolveDTO } from '../types/dtos/solve'
 import { formatTimeAverage, formatTimeDiff } from '../utils/time'
+import { toast } from 'sonner'
 
 const ACTIVE_SESSION_KEY = 'cubechrono.activeSessionId'
 
@@ -20,7 +21,7 @@ function TimerPage() {
   const [activeSessionId, setActiveSessionId] = useState<string | undefined>(
     () => localStorage.getItem(ACTIVE_SESSION_KEY) ?? undefined,
   )
-  const { sessions, loading: sessionsLoading, updateSession, reloadSessions } = useSessions()
+  const { sessions, loading: sessionsLoading, error: sessionsError, updateSession, reloadSessions } = useSessions()
   const activeSession = sessions.find((session) => session.id === activeSessionId)
 
   useEffect(() => {
@@ -34,16 +35,20 @@ function TimerPage() {
     localStorage.setItem(ACTIVE_SESSION_KEY, activeSessionId)
   }, [activeSessionId])
 
-  const { solves, createSolve, updateSolve, deleteSolve } = useSolves(activeSession?.id)
+  const { solves, error: solvesError, createSolve, updateSolve, deleteSolve } = useSolves(activeSession?.id)
   const [copied, setCopied] = useState(false)
   const [timerState, setTimerState] = useState<TimerState>('idle')
 
   const puzzle = activeSession?.puzzle ?? PUZZLE.THREE_BY_THREE
   const { scramble, generateScramble } = useScramble(puzzle)
 
+  useEffect(() => {
+    if (!sessionsError && !solvesError) return
+    toast.error(sessionsError?.message ?? solvesError?.message)
+  }, [sessionsError, solvesError])
+
   const isFocusActive = settings.focusMode && timerState !== 'idle'
   const loading = sessionsLoading && sessions.length === 0
-  // TODO:
   if (loading) {
     return <div className="flex h-full w-full items-center justify-center bg-background text-secondary">Loading...</div>
   }

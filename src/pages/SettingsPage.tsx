@@ -2,12 +2,18 @@ import Dropdown from '../components/common/Dropdown'
 import { Settings } from '../types/settings'
 import { THEME_OPTIONS } from '../types/theme'
 import { useSettings } from '../hooks/useSettings'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import ResetSettingsModal from '../components/settings/ResetSettingsModal'
+import { toast } from 'sonner'
 
 function SettingsPage() {
-  const { settings, updateSetting, resetSettings } = useSettings()
+  const { settings, error, updateSetting, resetSettings } = useSettings()
   const [showResetModal, setShowResetModal] = useState(false)
+
+  useEffect(() => {
+    if (!error) return
+    toast.error(error.message)
+  }, [error])
 
   return (
     <main className="h-full w-full overflow-y-auto bg-background text-primary scrollbar-hidden">

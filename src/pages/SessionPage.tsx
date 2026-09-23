@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { formatTime, formatTimeAverage } from '../utils/time'
 import { PUZZLES } from '../domain/puzzle'
 import { formatDate, formatDateAverage, formatDateTime } from '../utils/date'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import DeleteSessionModal, { DeleteSessionAction } from '../components/sessions/DeleteSessionModal'
 import SessionModal from '../components/sessions/SessionModal'
 import SolveModal from '../components/solves/SolveModal'
@@ -11,6 +11,7 @@ import { useSession } from '../hooks/useSession'
 import { useSolves } from '../hooks/useSolves'
 import { UpdateSessionDTO } from '../types/dtos/session'
 import { SolveDTO, UpdateSolveDTO } from '../types/dtos/solve'
+import { toast } from 'sonner'
 
 function SessionPage() {
   const navigate = useNavigate()
@@ -22,16 +23,22 @@ function SessionPage() {
   const {
     session,
     loading: sessionLoading,
+    error: sessionError,
     updateSession,
     deleteSession,
     clearSession,
     reload,
   } = useSession(sessionId!)
-  const { solves, loading: solvesLoading, updateSolve, deleteSolve } = useSolves(sessionId!)
+  const { solves, loading: solvesLoading, error: solvesError, updateSolve, deleteSolve } = useSolves(sessionId!)
   const loading = sessionLoading || solvesLoading
 
   const [selectedSolveId, setSelectedSolveId] = useState<string | undefined>(undefined)
   const selectedSolve = solves.find((solve) => solve.id === selectedSolveId)
+
+  useEffect(() => {
+    if (!sessionError && !solvesError) return
+    toast.error(sessionError?.message ?? solvesError?.message)
+  }, [sessionError, solvesError])
 
   const handleDeleteAction = async (action: DeleteSessionAction) => {
     switch (action) {

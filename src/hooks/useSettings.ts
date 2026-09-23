@@ -4,34 +4,51 @@ import { loadSettings, saveSettings } from '../utils/settings'
 
 export function useSettings() {
   const [settings, setSettings] = useState<Settings>(() => loadSettings())
+  const [error, setError] = useState<Error | undefined>(undefined)
 
   useEffect(() => {
     document.querySelector('body')?.setAttribute('data-theme', settings.theme.toLowerCase())
   }, [settings.theme])
 
   const updateSetting = <K extends keyof Settings>(key: K, value: Settings[K]) => {
-    setSettings((previous) => {
-      const next = { ...previous, [key]: value }
-      saveSettings(next)
-      return next
-    })
+    try {
+      setSettings((previous) => {
+        const next = { ...previous, [key]: value }
+        saveSettings(next)
+        return next
+      })
+      setError(undefined)
+    } catch (error) {
+      setError(error instanceof Error ? error : new Error('Failed to save setting'))
+    }
   }
 
   const updateSettings = (updates: Partial<Settings>) => {
-    setSettings((previous) => {
-      const next = { ...previous, ...updates }
-      saveSettings(next)
-      return next
-    })
+    try {
+      setSettings((previous) => {
+        const next = { ...previous, ...updates }
+        saveSettings(next)
+        return next
+      })
+      setError(undefined)
+    } catch (error) {
+      setError(error instanceof Error ? error : new Error('Failed to save setting'))
+    }
   }
 
   const resetSettings = () => {
-    setSettings(DEFAULT_SETTINGS)
-    saveSettings(DEFAULT_SETTINGS)
+    try {
+      setSettings(DEFAULT_SETTINGS)
+      saveSettings(DEFAULT_SETTINGS)
+      setError(undefined)
+    } catch (error) {
+      setError(error instanceof Error ? error : new Error('Failed to save setting'))
+    }
   }
 
   return {
     settings,
+    error,
     updateSetting,
     updateSettings,
     resetSettings,

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Plus } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import SessionList from '../components/sessions/SessionList'
@@ -6,15 +6,21 @@ import SessionModal from '../components/sessions/SessionModal'
 import DeleteSessionModal, { type DeleteSessionAction } from '../components/sessions/DeleteSessionModal'
 import { useSessions } from '../hooks/useSessions'
 import { CreateSessionDTO, SessionDTO, UpdateSessionDTO } from '../types/dtos/session'
+import { toast } from 'sonner'
 
 function SessionsPage() {
   const navigate = useNavigate()
 
-  const { sessions, loading, createSession, updateSession, deleteSession, clearSession } = useSessions()
+  const { sessions, loading, error, createSession, updateSession, deleteSession, clearSession } = useSessions()
 
   const [showCreateModal, setShowCreateModal] = useState(false)
   const [editingSession, setEditingSession] = useState<SessionDTO | undefined>(undefined)
   const [deletingSession, setDeletingSession] = useState<SessionDTO | undefined>(undefined)
+
+  useEffect(() => {
+    if (!error) return
+    toast.error(error.message)
+  }, [error])
 
   const handleOpen = (session: SessionDTO) => {
     navigate(`/sessions/${session.id}`)
@@ -51,7 +57,7 @@ function SessionsPage() {
   }
 
   if (loading) {
-    return <div> Loading Sessions...</div>
+    return <div>Loading Sessions...</div>
   }
 
   return (
