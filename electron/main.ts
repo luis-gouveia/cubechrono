@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from 'electron'
+import { app, BrowserWindow, Menu } from 'electron'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { initializeDatabase } from './data/database/connection'
@@ -19,6 +19,8 @@ function createWindow() {
     webPreferences: {
       preload: path.join(__dirname, 'preload.mjs'),
     },
+    width: 1280,
+    height: 720,
   })
 
   if (VITE_DEV_SERVER_URL) {
@@ -44,6 +46,7 @@ app.on('window-all-closed', () => {
 app
   .whenReady()
   .then(() => {
+    Menu.setApplicationMenu(null)
     const database = initializeDatabase()
     registerIpcHandlers(database.services.sessions, database.services.solves)
     createWindow()
