@@ -5,13 +5,19 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "postinstall": "electron-builder install-app-deps",
     "dev": "vite",
-    "build": "tsc && vite build && electron-builder",
+    "build": "tsc && vite build",
+    "build:mac": "npm run build && electron-builder --mac --publish never",
+    "build:win": "npm run build && electron-builder --win --x64 --publish never",
     "lint": "eslint .",
     "preview": "vite preview",
     "rebuild": "electron-rebuild",
+    "pretest": "npm rebuild better-sqlite3",
     "test": "vitest run",
+    "pretest:watch": "npm rebuild better-sqlite3",
     "test:watch": "vitest",
+    "pretest:coverage": "npm rebuild better-sqlite3",
     "test:coverage": "vitest run --coverage"
   },
   "dependencies": {

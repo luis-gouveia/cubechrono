@@ -6,8 +6,19 @@ import tsConfigPaths from 'vite-tsconfig-paths'
 import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
+  base: './',
   build: {
     target: 'es2022',
+    modulePreload: false,
+    rollupOptions: {
+      output: {
+        // Keep cubing's worker modules independent of the renderer entry point.
+        manualChunks(id) {
+          const modulePath = id.split('/node_modules/cubing/')[1]
+          if (modulePath) return `cubing/${modulePath.replace(/\.js$/, '')}`
+        },
+      },
+    },
   },
   plugins: [
     react(),
