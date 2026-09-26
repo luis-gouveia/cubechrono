@@ -1,8 +1,9 @@
 {
   "name": "cubechrono",
   "description": "Speedcubing timer with WCA puzzle support, session tracking and statistics",
-  "private": true,
-  "version": "0.0.0",
+  "author": "Luís Gouveia",
+  "version": "1.0.0",
+  "license": "MIT",
   "type": "module",
   "scripts": {
     "postinstall": "electron-builder install-app-deps",
