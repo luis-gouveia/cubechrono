@@ -1,7 +1,6 @@
 import Database from 'better-sqlite3'
 import { app } from 'electron'
 import path from 'node:path'
-
 import { runMigrations } from './migrations'
 import { SessionRepo } from '../repos/sessionRepo'
 import { SolveRepo } from '../repos/solveRepo'

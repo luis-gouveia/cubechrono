@@ -25,9 +25,9 @@ function TimerPage() {
   const activeSession = sessions.find((session) => session.id === activeSessionId)
 
   useEffect(() => {
-    if (activeSessionId !== undefined) return
     if (sessions.length === 0) return
-    setActiveSessionId(sessions[0].id)
+    const sessionExists = sessions.some((session) => session.id === activeSessionId)
+    if (!sessionExists) setActiveSessionId(sessions[0].id)
   }, [sessions, activeSessionId])
 
   useEffect(() => {
