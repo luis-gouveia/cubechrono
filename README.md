@@ -40,18 +40,18 @@ CubeChrono runs as a native desktop application using Electron, with a React-bas
 ## Screenshots
 
 ### Timer
-<img align="left" src="./media/timer_page_1.png" alt="CubeChrono" width="50%" />
-<img src="./media/timer_page_2.png" alt="CubeChrono" width="50%" />
+<img align="left" src="./media/timer_page_1.png" alt="CubeChrono" width="75%" />
+<img src="./media/timer_page_2.png" alt="CubeChrono" width="75%" />
 
 ### Session management
-<img align="left" src="./media/sessions_page.png" alt="CubeChrono" width="50%" />
-<img align="left" src="./media/session_page.png" alt="CubeChrono" width="50%" />
-<img src="./media/solve_modal.png" alt="CubeChrono" width="50%" />
+<img align="left" src="./media/sessions_page.png" alt="CubeChrono" width="75%" />
+<img align="left" src="./media/session_page.png" alt="CubeChrono" width="75%" />
+<img src="./media/solve_modal.png" alt="CubeChrono" width="75%" />
 
 ### Session statistics
 
-<img align="left" src="./media/statistics_page.png" alt="CubeChrono" width="50%" />
-<img src="./media/puzzle_statistics.png" alt="CubeChrono" width="50%" />
+<img align="left" src="./media/statistics_page.png" alt="CubeChrono" width="75%" />
+<img src="./media/puzzle_statistics.png" alt="CubeChrono" width="75%" />
 
 ---
 
